@@ -1,10 +1,9 @@
 package com.company;
 
 import java.util.List;
-import java.util.Arrays;
 
 public class FirstFit {
-    public static int[][] placeSquares(int maxMeret, List<Integer> guideSequence) throws Except.Tulkicsi {
+    public static double placeSquares(int maxMeret, List<Integer> guideSequence) {
         int currentGuideIndex = 0;
         int meretHelp = maxMeret;
         int hivnum = 1;
@@ -40,7 +39,7 @@ public class FirstFit {
                     currentGuideIndex++;
                     meretHelp--;
                     if (meretHelp == 0) {
-                        return solution;
+                        return (double) solution.length / optV2;
                     }
                 } else {
                     //ha nem akkor ugrik és növeli a méretet
