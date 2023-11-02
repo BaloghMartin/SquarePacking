@@ -5,7 +5,7 @@ import java.util.List;
 public class FirstFit {
     public static int[][] placeSquares(int meret, List<Integer> guideSequence) throws Except.Tulkicsi {
         int currentGuideIndex = 0;
-
+        int meretHelp=meret;
         int hivnum = 0;
         double opt = 0;
         int optSeg = meret;
@@ -23,32 +23,29 @@ public class FirstFit {
         while(true){
             //tömblétrehozás
             solution = new int[optV2+hivnum-1][optV2+hivnum-1];
-            while(true) {
+
                 //elemetetés
                 while (currentGuideIndex < guideSequence.size()) {
                     //elbánás a tömbbel case-ek szerint
                     int currentGuide = guideSequence.get(hivnum - 1);
-
-
+                    //helykeresés
                     int[] position = finder(solution, meret);
                     if (position != null) {
-                        solution=placer(solution, meret, position[0], position[1]);
+                        //ha van hely beírja
+                        solution = placer(solution, meret, position[0], position[1]);
                         currentGuideIndex++;
-
+                        meretHelp--;
+                        if (meretHelp==0){return solution;}
                     } else {
-
+                        //ha nem akkor ugrik és növeli a méretet
+                        break;
                     }
+                }
+                hivnum++;
 
-            }
-
-
-            hivnum++;
 
         }
-            //tömblétrehozás
-            break;
-        }
-        return solution;
+
     }
 
     private static int[] finder(int[][] solution, int meret) {
