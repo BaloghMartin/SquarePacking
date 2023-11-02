@@ -6,7 +6,7 @@ public class FirstFit {
     public static int[][] placeSquares(int meret, List<Integer> guideSequence) throws Except.Tulkicsi {
         int currentGuideIndex = 0;
 
-        int hivnum = 1;
+        int hivnum = 0;
         double opt = 0;
         int optSeg = meret;
         while (true) {
@@ -21,27 +21,31 @@ public class FirstFit {
         int[][] solution;
 
         while(true){
+            //tömblétrehozás
             solution = new int[optV2+hivnum-1][optV2+hivnum-1];
             while(true) {
+                //elemetetés
                 while (currentGuideIndex < guideSequence.size()) {
+                    //elbánás a tömbbel case-ek szerint
                     int currentGuide = guideSequence.get(hivnum - 1);
 
-                if (currentGuide == 1) {
+
                     int[] position = finder(solution, meret);
                     if (position != null) {
-                        placer(solution, meret, position[0], position[1]);
-                    } else {
-                        throw new Except.Tulkicsi("nem fér bele");
-                    }
-                }
+                        solution=placer(solution, meret, position[0], position[1]);
+                        currentGuideIndex++;
 
-                currentGuideIndex++;
+                    } else {
+
+                    }
+
             }
+
+
             hivnum++;
-            if(hivnum==meret){
-                break;
-            }
+
         }
+            //tömblétrehozás
             break;
         }
         return solution;
@@ -79,11 +83,12 @@ public class FirstFit {
         return null;
     }
 
-    private static void placer(int[][] solution, int meret, int n, int m) {
+    private static int[][] placer(int[][] solution, int meret, int n, int m) {
         for (int i = n; i < n + meret; i++) {
             for (int j = m; j < m + meret; j++) {
                 solution[i][j] = meret;
             }
         }
+        return solution;
     }
 }
