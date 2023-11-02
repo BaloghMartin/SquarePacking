@@ -9,9 +9,9 @@ public class Main {
         int maxMeret = 5;
         List<Integer> guideSequence = new ArrayList<>();
         guideSequence.add(1);
-        guideSequence.add(1);
-        guideSequence.add(1);
-        guideSequence.add(1);
+        guideSequence.add(5);
+        guideSequence.add(8);
+        guideSequence.add(2);
         guideSequence.add(1);
 
         try {
