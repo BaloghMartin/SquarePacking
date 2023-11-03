@@ -10,7 +10,7 @@ import java.util.List;
 
 public class algoIranyitoIranyito {
     public static void main(String[] args) {
-        int n = 1;
+        int n = 100;
         PrintWriter writer = null;
 
         // Get the current date and time
@@ -25,7 +25,7 @@ public class algoIranyitoIranyito {
         try {
             writer = new PrintWriter(new FileWriter(filePath));
 
-            while (n <= 200) {
+            while (n <= 101) {
                 double opt = 0;
                 int optV2 = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6));
 
