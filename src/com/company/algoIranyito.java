@@ -7,7 +7,7 @@ import java.util.Random;
 class algoIranyito {
     static int length;
     static int populationSize = 50;
-    static int numGenerations = 40;
+    static int numGenerations = 5;
     static double mutationRate = 0.8;
     static List<Integer> eliteGeneticCode = null;
     static double eliteFitness = Double.MAX_VALUE;
