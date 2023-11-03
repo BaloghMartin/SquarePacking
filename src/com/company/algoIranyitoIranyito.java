@@ -10,7 +10,7 @@ import java.util.List;
 
 public class algoIranyitoIranyito {
     public static void main(String[] args) {
-        int n = 100;
+        int n = 1;
         PrintWriter writer = null;
 
         // Get the current date and time
