@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 public class algoIranyitoIranyito {
     public static void main(String[] args) {
@@ -26,25 +27,17 @@ public class algoIranyitoIranyito {
 
             while (n <= 200) {
                 double opt = 0;
-                int optSeg = n;
-                while (true) {
-                    opt = opt + (optSeg * optSeg);
-                    optSeg--;
-                    if (optSeg == 0) {
-                        break;
-                    }
-                }
-                double optV = Math.sqrt(opt);
-                int optV2 = (int) Math.round(optV);
-                double result = algoIranyito.main(n);
-                int optV2Result = (int) Math.round(optV2 * result);
+                int optV2 = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6));
 
-                // Write to the file
-                writer.println(n + " " + result + " " + optV2 + " " + optV2Result);
+                List<Integer> result = algoIranyito.main(n);
+                int[][] solution = FirstFit.placeSquaresAndReturnArray(n, result);
+
+                String output = String.format("n = %d, lb: %d, Sol: %d, ar: %.5f", n,optV2, solution.length, (double)solution.length/optV2);
+                System.out.println(output);
+                output = String.format("n = %d, lb: %d, Sol: %d, genetic code: %s", n,optV2, solution.length, result.toString());
+                writer.println(output);
+
                 writer.flush(); // Flush the writer to save the content immediately
-
-                // Print to the console
-                System.out.println(n + " " + result + " " + optV2 + " " + optV2Result);
                 n++;
             }
         } catch (IOException e) {

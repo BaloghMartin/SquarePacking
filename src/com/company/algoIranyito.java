@@ -9,8 +9,8 @@ import java.util.Random;
 class algoIranyito {
 
     static int length;
-    static int populationSize = 200;
-    static int numGenerations = 200;
+    static int populationSize = 500;
+    static int numGenerations = 20;
     static double mutationRate = 0.8;
     static List<Integer> eliteGeneticCode = null;
     static double eliteFitness = Double.MAX_VALUE;
@@ -20,19 +20,17 @@ class algoIranyito {
         List<Integer> geneticCode = new ArrayList<>();
         Random random = new Random();
 
-        for (int i = 0; i < length; i++) {
-            // Generate random numbers between 1 and 4
+        geneticCode.add(1);  // The first element is always 1
+
+        for (int i = 1; i < length; i++) {
+            // Generate random numbers between 1 and 8 (inclusive) for the remaining elements
             int randomNumber = random.nextInt(8) + 1;
             geneticCode.add(randomNumber);
         }
 
-        // Ensure the generated genetic code has the correct length
-        if (geneticCode.size() != length) {
-            throw new IllegalStateException("Generated genetic code length is incorrect");
-        }
-
         return geneticCode;
     }
+
 
     public static double evaluateGeneticCode(List<Integer> geneticCode) {
         // You can implement your own criteria to evaluate the genetic code here.
@@ -41,7 +39,8 @@ class algoIranyito {
             // Ignore genetic codes with incorrect lengths
             return Double.POSITIVE_INFINITY; // or any other suitable value
         }
-        //System.out.println(geneticCode.toString());
+
+
         double score = FirstFit.placeSquares(length,geneticCode);
 
         // Lower score is considered better
@@ -53,67 +52,37 @@ class algoIranyito {
             throw new IllegalStateException("Invalid length");
         }
 
-        int crossoverPoint = Math.min(length / 2, Math.min(parent1.size(), parent2.size()));
-        List<Integer> offspring = new ArrayList<>(length);
-
-        // Copy the first part of parent1
-        offspring.addAll(parent1.subList(0, crossoverPoint));
-
-        // Copy the remaining part from parent2
-        if (crossoverPoint < length) {
-            offspring.addAll(parent2.subList(crossoverPoint, Math.min(length, parent2.size())));
-        }
-
-        // If offspring size is less than length, pad it with random values
-        while (offspring.size() < length) {
-            offspring.add(new Random().nextInt(4) + 1);
-        }
-
-        // If offspring size is greater than length, truncate it
-        if (offspring.size() > length) {
-            offspring = offspring.subList(0, length);
-        }
-
-        return offspring;
-    }
-    /*
-    public static List<Integer> crossover(List<Integer> parent1, List<Integer> parent2) {
-        if (length <= 0) {
-            throw new IllegalStateException("Invalid length");
-        }
-
-        int crossoverPoint = Math.min(length / 2, Math.min(parent1.size(), parent2.size()));
         List<Integer> offspring = new ArrayList<>(length);
 
         // Copy genes from both parents in pairs
         for (int i = 0; i < length; i++) {
-            if (i % 4 < 2) {
+            if (i % 2 == 0 && i < parent1.size()) {
                 offspring.add(parent1.get(i));
-            } else {
+            } else if (i % 2 != 0 && i < parent2.size()) {
                 offspring.add(parent2.get(i));
+            } else {
+                offspring.add(new Random().nextInt(8) + 1);
             }
         }
 
         return offspring;
     }
-*/
-
-
 
     public static void mutate(List<Integer> geneticCode) {
         Random random = new Random();
         for (int i = 0; i < length; i++) {
             if (random.nextDouble() < mutationRate) {
-                // Mutate the gene with a small probability
-                geneticCode.set(i, random.nextInt(4) + 1);
+                geneticCode.set(i, random.nextInt(8) + 1);
             }
         }
     }
 
-    public static double main(int len) {
+
+
+    public static List<Integer> main(int len) {
         if (len <= 0 || populationSize <= 0) {
             // Handle invalid input, e.g., return an error code or throw an exception
-            return -1; // or any other suitable value
+            return null; // or any other suitable value
         }
 
         algoIranyito.length = len; // Set the length here
@@ -123,13 +92,12 @@ class algoIranyito {
         for (int i = 0; i < populationSize; i++) {
             List<Integer> geneticCode = generateGeneticCode();
             if (geneticCode.size() != length) {
-                // Handle the case where generated genetic code has an incorrect length
+                // Handle the case where the generated genetic code has an incorrect length
                 continue; // Skip the genetic code and do not add it to the population
             }
             population.add(geneticCode);
         }
 
-        double bestFitness = 0;
         for (int generation = 1; generation <= numGenerations; generation++) {
             // Evaluate the fitness of each individual in the population
             List<Double> fitnessScores = new ArrayList<>();
@@ -139,8 +107,7 @@ class algoIranyito {
 
                 // Check for a perfect score
                 if (score == 1.0) {
-                    bestFitness = 1.0;
-                    return bestFitness; // Return immediately
+                    return geneticCode; // Return the genetic code with a perfect score
                 }
             }
 
@@ -150,6 +117,11 @@ class algoIranyito {
                 if (score < eliteFitness) {
                     eliteFitness = score;
                     eliteGeneticCode = new ArrayList<>(geneticCode);
+
+                    // Ensure eliteGeneticCode has the correct length
+                    if (eliteGeneticCode.size() != length) {
+                        eliteGeneticCode = generateGeneticCode(); // Generate a new random elite genetic code
+                    }
                 }
             }
 
@@ -176,25 +148,25 @@ class algoIranyito {
             population = newPopulation;
             population.set(0, eliteGeneticCode);
 
-            // Print information about the current generation
-            bestFitness = fitnessScores.stream().min(Double::compare).get();
-
-            double averageFitness = fitnessScores.stream().mapToDouble(Double::doubleValue).average().orElse(0);
-            //System.out.println("Generation " + generation + " - Best Fitness: " + bestFitness + " - Average Fitness: " + averageFitness);
-            int mutatedOffspringCount = 0;
-            for (List<Integer> offspring : newPopulation) {
-                if (!offspring.equals(population.get(0))) {
-                    mutatedOffspringCount++;
-                }
-            }
-            //System.out.println("Generation " + generation + " - Mutated Offspring Count: " + mutatedOffspringCount);
             // Check for a perfect score
-            if (bestFitness == 1.0) {
-                return bestFitness; // Return immediately
+            if (eliteFitness == 1.0) {
+                // Ensure eliteGeneticCode has the correct length
+                if (eliteGeneticCode.size() != length) {
+                    eliteGeneticCode = generateGeneticCode(); // Generate a new random elite genetic code
+                }
+                return eliteGeneticCode; // Return the genetic code with a perfect score
             }
         }
-        return bestFitness;
+
+        // Ensure eliteGeneticCode has the correct length
+        if (eliteGeneticCode.size() != length) {
+            eliteGeneticCode = generateGeneticCode(); // Generate a new random elite genetic code
+        }
+
+        return eliteGeneticCode; // Return the best genetic code found
     }
+
+
 
 
 

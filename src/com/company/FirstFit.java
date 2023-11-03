@@ -7,17 +7,7 @@ public class FirstFit {
         int currentGuideIndex = 0;
         int meretHelp = maxMeret;
         int hivnum = 1;
-        double opt = 0;
-        int optSeg = maxMeret;
-        while (true) {
-            opt = opt + (optSeg * optSeg);
-            optSeg--;
-            if (optSeg == 0) {
-                break;
-            }
-        }
-        double optV = Math.sqrt(opt);
-        int optV2 = (int) Math.round(optV);
+        int optV2 = (int)  Math.sqrt(maxMeret * (maxMeret + 1) * (2 * maxMeret + 1) / 6);
         int[][] solution;
 
         while (true) {
@@ -39,6 +29,7 @@ public class FirstFit {
                     currentGuideIndex++;
                     meretHelp--;
                     if (meretHelp == 0) {
+                        //System.out.println(guideSequence.toString());
                         return (double) solution.length / optV2;
                     }
                 } else {
@@ -168,4 +159,48 @@ public class FirstFit {
         }
         return solution;
     }
-}
+    public static int[][] placeSquaresAndReturnArray(int maxMeret, List<Integer> guideSequence) {
+        //System.out.println(guideSequence.toString());
+        int currentGuideIndex = 0;
+        int meretHelp = maxMeret;
+        int hivnum = 1;
+        int optV2 = (int) Math.sqrt(maxMeret * (maxMeret + 1) * (2 * maxMeret + 1) / 6);
+        int[][] solution;
+
+        while (true) {
+            // Tömb létrehozás
+            meretHelp = maxMeret;
+            solution = new int[optV2 + hivnum - 1][optV2 + hivnum - 1];
+
+            // Elemetetés
+            while (currentGuideIndex < guideSequence.size()) {
+                //elbánás a tömbbel case-ek szerint
+                int currentGuide = guideSequence.get(currentGuideIndex);
+                solution = matrixTransform(currentGuide, solution);
+                //helykeresés
+                int[] position = finder(solution, meretHelp);
+                if (position != null) {
+                    //ha van hely beírja
+                    solution = placer(solution, meretHelp, position[0], position[1]);
+                    currentGuideIndex++;
+                    meretHelp--;
+                    if (meretHelp == 0) {
+                        return solution;
+                    }
+                } else {
+                    //ha nem akkor ugrik és növeli a méretet
+                    break;
+                }
+            }
+
+            currentGuideIndex = 0;
+            hivnum++;
+        }
+
+
+    }}
+
+
+
+
+
