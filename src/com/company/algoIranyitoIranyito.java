@@ -25,13 +25,27 @@ public class algoIranyitoIranyito {
         try {
             writer = new PrintWriter(new FileWriter(filePath));
 
-            while (n <= 101) {
+            while (n <= 201) {
                 double opt = 0;
                 int optV2 = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6));
+                int m=n+1;
+                List<Integer> result;
+                int[][] solution;
+                int giveUP=0;
+                List<Integer> resultTEMP;
+                int[][] solutionTEMP;
+                while(true) {
+                    giveUP++;
+                    result = algoIranyito.main(n);
+                    solution = FirstFit.placeSquaresAndReturnArray(n, result);
 
-                List<Integer> result = algoIranyito.main(n);
-                int[][] solution = FirstFit.placeSquaresAndReturnArray(n, result);
+                   if (solution.length<=((int) Math.ceil(Math.sqrt(m * (m + 1) * (2 * m + 1) / 6)))){
 
+                       break;}
+                   if (giveUP==1){
+                    //System.out.println("GIVEN UP");
+                    break;}
+                    }
                 String output = String.format("n = %d, lb: %d, Sol: %d, ar: %.5f", n,optV2, solution.length, (double)solution.length/optV2);
                 System.out.println(output);
                 output = String.format("n = %d, lb: %d, Sol: %d, genetic code: %s", n,optV2, solution.length, result.toString());
