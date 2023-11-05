@@ -10,7 +10,7 @@ import java.util.List;
 
 public class algoIranyitoIranyito {
     public static void main(String[] args) {
-        int n = 1;
+        int n = 16;
         PrintWriter writer = null;
 
         // Get the current date and time
@@ -25,7 +25,7 @@ public class algoIranyitoIranyito {
         try {
             writer = new PrintWriter(new FileWriter(filePath));
 
-            while (n <= 201) {
+            while (n <=16 ) {
                 double opt = 0;
                 int optV2 = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6));
                 int m=n+1;
@@ -34,18 +34,16 @@ public class algoIranyitoIranyito {
                 int giveUP=0;
                 List<Integer> resultTEMP;
                 int[][] solutionTEMP;
-                while(true) {
-                    giveUP++;
+                //while(true) {
+                   // giveUP++;
                     result = algoIranyito.main(n);
                     solution = FirstFit.placeSquaresAndReturnArray(n, result);
 
-                   if (solution.length<=((int) Math.ceil(Math.sqrt(m * (m + 1) * (2 * m + 1) / 6)))){
+                  // if (solution.length<=((int) Math.ceil(Math.sqrt(m * (m + 1) * (2 * m + 1) / 6)))){
 
-                       break;}
-                   if (giveUP==1){
-                    //System.out.println("GIVEN UP");
-                    break;}
-                    }
+                    //   break;}
+
+                    //}
                 String output = String.format("n = %d, lb: %d, Sol: %d, ar: %.5f", n,optV2, solution.length, (double)solution.length/optV2);
                 System.out.println(output);
                 output = String.format("n = %d, lb: %d, Sol: %d, genetic code: %s", n,optV2, solution.length, result.toString());

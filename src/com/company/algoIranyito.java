@@ -6,8 +6,8 @@ import java.util.Random;
 
 class algoIranyito {
     static int length;
-    static int populationSize = 50;
-    static int numGenerations = 5;
+    static int populationSize = 10000;
+    static int numGenerations = 1000;
     static double mutationRate = 0.8;
     static List<Integer> eliteGeneticCode = null;
     static double eliteFitness = Double.MAX_VALUE;
@@ -71,6 +71,7 @@ class algoIranyito {
                 if (score == 1.0) {
                     return eliteGeneticCode;
                 }
+                printAverageFitness(fitnessScores);
             }
         }
 
@@ -162,5 +163,10 @@ class algoIranyito {
                 geneticCode.set(i, random.nextInt(8) + 1);
             }
         }
+    }
+    public static void printAverageFitness(List<Double> fitnessScores) {
+        double sum = fitnessScores.stream().mapToDouble(Double::doubleValue).sum();
+        double average = sum / fitnessScores.size();
+        System.out.println("Generation Fitness Average: " + average);
     }
 }
