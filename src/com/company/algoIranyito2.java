@@ -76,20 +76,23 @@ public class algoIranyito2 {
 
     public static List<Integer> main(int len) {
 
-        length=len;
-        eliteGenes=new ArrayList<>();
+        length = len;
+        eliteGenes = new ArrayList<>();
         eliteFitness = Double.MAX_VALUE;
-        generation=1;
+        generation = 1;
         previousBestFitness = Double.MAX_VALUE;
         algoIranyito2.n = len;
         call++;
+
+        optV2 = (int) Math.ceil(Math.sqrt(len * (len + 1) * (2 * len + 1) / 6));
+
         if (len <= 0 || populationSize <= 0) {
             return null;
         }
-        if (call == 1) {
 
+        if (call == 1) {
             // If it's the first generation, initialize the population
-            optV2 = (int) Math.ceil(Math.sqrt(len * (len + 1) * (2 * len + 1) / 6));
+
             length = len; // Set the length of the gene
 
             // Generate the initial population
@@ -97,36 +100,30 @@ public class algoIranyito2 {
                 List<Integer> geneticCode = generateGeneticCodeWithN(len, len); // Add 'len' to each gene
                 population.add(geneticCode);
             }
-
-            //System.out.println(population.size());
-            // Debug: Print initial population
-            //System.out.println("Initial Population:");
-            for (List<Integer> geneticCode : population) {
-                //System.out.println(geneticCode);
-            }
-
         }
-        if (call>1){
+
+        if (call > 1) {
             System.out.println("hey");
-            for (List<Integer> geneticCode : population) {
-                addIntegerToGene(geneticCode,len);
-            }
-            //System.out.println(population.toString());
 
+            for (List<Integer> geneticCode : population) {
+                addIntegerToGene(geneticCode, len);
+            }
         }
+
         List<Double> fitnessScores = evaluatePopulation(population);
+        int printInterval = numGenerations / 4;
 
         while (generation <= numGenerations) {
-
-
             population = evolvePopulation(population, fitnessScores);
             fitnessScores = evaluatePopulation(population);
+
             // Find the best gene and its fitness in this generation
             double bestFitness = Double.MAX_VALUE;
             List<Integer> bestGene = null;
 
             for (int i = 0; i < population.size(); i++) {
                 double fitness = fitnessScores.get(i);
+
                 if (fitness < bestFitness) {
                     bestFitness = fitness;
                     bestGene = population.get(i);
@@ -134,17 +131,22 @@ public class algoIranyito2 {
             }
 
             // Add the best gene to eliteGenes (if it's better than previous best)
-            if (bestGene != null && (eliteGenes.isEmpty() || bestFitness < eliteFitness)) {
+            if (bestGene != null) {
+                // Save the unmutated version
                 eliteGenes.clear();
                 eliteGenes.add(bestGene);
                 eliteFitness = bestFitness;
+
+                // Mutate the best gene and save the mutated version
+                List<Integer> mutatedBestGene = new ArrayList<>(bestGene);
+                mutate(mutatedBestGene);
+                eliteGenes.add(mutatedBestGene);
             }
 
-
-
-
             // Print generation info
-            printGenerationInfo(generation, bestFitness, calculateAverage(fitnessScores), fitnessScores);
+            if (generation % printInterval == 0) {
+                System.out.println("Generation " + generation + " - Best Fitness: " + bestFitness);
+            }
 
             generation++;
         }
@@ -160,7 +162,6 @@ public class algoIranyito2 {
 
 
 
-
     // Function to perform mutation by swapping two random numbers in the gene
     public static void mutate(List<Integer> gene) {
         int index1 = random.nextInt(gene.size());
@@ -170,7 +171,7 @@ public class algoIranyito2 {
 
     // Updated evolvePopulation method
     // Updated evolvePopulation method
-    public static List<List<Integer>> evolvePopulation(List<List<Integer>> population, List<Double> fitnessScores) {
+    public static List<List<Integer> > evolvePopulation(List<List<Integer> > population, List<Double> fitnessScores) {
         if (populationSize < 10) {
             // Handle the case when the population size is too small
             System.out.println("Population size is too small for evolution.");
@@ -180,7 +181,7 @@ public class algoIranyito2 {
         double totalFitness = fitnessScores.stream().mapToDouble(Double::doubleValue).sum();
 
         // Create a copy of the population for sorting
-        List<List<Integer>> sortedPopulation = new ArrayList<>(population);
+        List<List<Integer> > sortedPopulation = new ArrayList<>(population);
 
         // Sort the sortedPopulation based on fitness scores using a custom Comparator
         sortedPopulation.sort((code1, code2) -> {
@@ -197,9 +198,9 @@ public class algoIranyito2 {
         worstCount = Math.min(worstCount, populationSize); // Ensure worstCount doesn't exceed population size
         int middleCount = populationSize - bestCount - worstCount; // Middle 80%
 
-        List<List<Integer>> newPopulation = new ArrayList<>();
+        List<List<Integer> > newPopulation = new ArrayList<>();
 
-        // Include the best gene directly
+        // Include the best gene directly from the eliteGenes (if available)
         if (!eliteGenes.isEmpty()) {
             newPopulation.add(new ArrayList<>(eliteGenes.get(0)));
             bestCount--; // Decrement the count of best genes to account for the elite gene
@@ -263,7 +264,7 @@ public class algoIranyito2 {
         }
 
         // Introduce mutation
-        for (int i = 0; i < populationSize-1; i++) {
+        for (int i = 1; i < populationSize - 1; i++) {
             if (Math.random() < initialMutationRate) {
                 mutate(newPopulation.get(i)); // Call the mutate function
             }
@@ -274,8 +275,12 @@ public class algoIranyito2 {
             newPopulation.add(generateGeneticCode());
         }
 
+        // Clear eliteGenes before returning the new population
+        eliteGenes.clear();
+
         return newPopulation;
     }
+
     public static int selectParentByFitness(List<Double> fitnessScores, double totalFitness) {
         double randomValue = random.nextDouble() * totalFitness;
         double cumulativeFitness = 0;
