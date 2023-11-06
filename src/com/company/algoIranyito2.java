@@ -1,232 +1,164 @@
 package com.company;
 
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class algoIranyito2 {
-    static int optV2;
-    static int length;
-    static int populationSize = 100;
-    static int numGenerations = 1000;
-    static double mutationRate = 0.3;
-    static List<List<Integer>> eliteGenes = new ArrayList<>();
-    static double eliteFitness = Double.MAX_VALUE;
-    static int generation = 1;
-    static double previousBestFitness = Double.MAX_VALUE;
+    private static int optV2;
+    private static int length;
+    private static final int populationSize = 10;
+    private static final int numGenerations = 10;
+    private static final double initialMutationRate = 0.5;
+    private static final double finalMutationRate = 0.1;
+    private static final int elitePercentage = 10;
+    private static final Random random = new Random();
+    private static final Map<List<Integer>, Integer> codeToIndexMap = new HashMap<>();
+    private static List<List<Integer>> population = new ArrayList<>();
+    private static List<List<Integer>> eliteGenes = new ArrayList<>();
+    private static double eliteFitness = Double.MAX_VALUE;
+    private static int generation = 1;
+    private static double previousBestFitness = Double.MAX_VALUE;
+    private static int n;
 
-    public static List<Integer> generateGeneticCode() {
+    public static List<Integer> generateGeneticCodeWithN(int len, int n) {
         List<Integer> geneticCode = new ArrayList<>();
+        List<Integer> availableNumbers = new ArrayList<>();
 
-        for (int i = 1; i <= length; i++) {
-            geneticCode.add(i);
+        // Initialize available numbers with all numbers from 1 to len
+        for (int i = 1; i <= len; i++) {
+            availableNumbers.add(i);
+        }
+
+        for (int i = 0; i < len; i++) {
+            if (i < n && !availableNumbers.isEmpty()) {
+                // Add a random number from available numbers to the gene
+                int randomIndex = random.nextInt(availableNumbers.size());
+                int randomNumber = availableNumbers.remove(randomIndex);
+                geneticCode.add(randomNumber);
+            } else {
+                // If 'n' elements have already been added, fill the rest with random numbers
+                int randomGene = generateRandomGene(availableNumbers);
+                geneticCode.add(randomGene);
+            }
         }
 
         // Shuffle the genetic code to create permutations
         Collections.shuffle(geneticCode);
+
+        // If len is greater than n, add the additional numbers from n+1 to len
+        if (len > n) {
+            for (int i = n + 1; i <= len; i++) {
+                int randomIndex = random.nextInt(len); // Add the number at a random place
+                geneticCode.add(randomIndex, i);
+            }
+        }
 
         return geneticCode;
     }
 
     public static List<Double> evaluatePopulation(List<List<Integer>> population) {
         List<Double> fitnessScores = new ArrayList<>();
-        for (List<Integer> geneticCode : population) {
-            //double score = Spiral.placeSquares(geneticCode);
-            int[][] solution;
+        codeToIndexMap.clear(); // Clear the map
 
-            solution = Spiral.placeSquaresAndReturnArray(geneticCode);
-            double score=(double)solution.length/optV2;
+        for (int i = 0; i < population.size(); i++) {
+            List<Integer> geneticCode = population.get(i);
+            codeToIndexMap.put(geneticCode, i); // Map genetic code to its index
+            System.out.println(geneticCode.toString());
+            int[][] solution = Spiral.placeSquaresAndReturnArray(geneticCode);
+            double score = (double) solution.length / optV2;
             fitnessScores.add(score);
-
         }
         return fitnessScores;
     }
 
+
+
     public static List<Integer> main(int len) {
+        algoIranyito2.n = len;
         if (len <= 0 || populationSize <= 0) {
             return null;
         }
-        int generation = 1; // Reset the generation counter
-        eliteFitness = Double.MAX_VALUE; // Reset eliteFitness
-        eliteGenes.clear(); // Clear eliteGenes
-        previousBestFitness = Double.MAX_VALUE; // Reset previousBestFitness
-        optV2 = (int) Math.ceil(Math.sqrt(len * (len + 1) * (2 * len + 1) / 6));
-        //System.out.println(len);
-        //System.out.println(optV2);
-        algoIranyito2.length = len;
+        if (generation == 1) {
+            // If it's the first generation, initialize the population
+            optV2 = (int) Math.ceil(Math.sqrt(len * (len + 1) * (2 * len + 1) / 6));
+            length = len; // Set the length of the gene
 
-        List<List<Integer>> population = new ArrayList<>();
-        for (int i = 0; i < populationSize; i++) {
-            List<Integer> geneticCode = generateGeneticCode();
-            if (geneticCode.size() != length) {
-                continue;
+            // Generate the initial population
+            for (int i = population.size(); i < populationSize; i++) {
+                List<Integer> geneticCode = generateGeneticCodeWithN(len, len); // Add 'len' to each gene
+                population.add(geneticCode);
             }
-            population.add(geneticCode);
+
+            // Debug: Print initial population
+            System.out.println("Initial Population:");
+            for (List<Integer> geneticCode : population) {
+                //  System.out.println(geneticCode);
+            }
         }
 
         List<Double> fitnessScores = evaluatePopulation(population);
         List<Double> generationAverages = new ArrayList<>();
 
         while (generation <= numGenerations) {
-            // After evolving the population
-            population = evolvePopulation(population, fitnessScores);
+            // Your evolution logic here
 
-            // Recalculate fitness scores for the updated population
-            fitnessScores = evaluatePopulation(population);
-
-            // Rest of your code remains the same...
-            double totalFitness = fitnessScores.stream().mapToDouble(Double::doubleValue).sum();
-            double averageFitness = totalFitness / populationSize;
-            generationAverages.add(averageFitness);
-
+            // Debug: Print population for this generation
+            System.out.println("Generation " + generation + " - Population:");
             for (List<Integer> geneticCode : population) {
-                double score = fitnessScores.get(population.indexOf(geneticCode));
-
-                if (score < eliteFitness) {
-                    eliteFitness = score;
-                    eliteGenes.clear();
-                    eliteGenes.add(new ArrayList<>(geneticCode));
-
-                    if (eliteGenes.get(0).size() != length) {
-                        eliteGenes.set(0, generateGeneticCode());
-                    }
-                }
-
-                if (score == 1.0) {
-                    return eliteGenes.get(0);
-                }
+                System.out.println(geneticCode);
             }
 
-            if (generation % 1 == 0) {
-                printGenerationInfo(generation, eliteFitness, averageFitness, fitnessScores);
-
-            }
             generation++;
         }
 
-        if (eliteGenes.get(0).size() != length) {
-            eliteGenes.set(0, generateGeneticCode());
+        if (!eliteGenes.isEmpty() && eliteGenes.get(0).size() == length) {
+            // Debug: Print the best gene (elite)
+            System.out.println("Best Gene (Elite): " + eliteGenes.get(0));
+            return eliteGenes.get(0);
+        } else {
+            return null;
         }
-
-        return eliteGenes.get(0);
     }
+
+
+
 
     // Function to perform mutation by swapping two random numbers in the gene
     public static void mutate(List<Integer> gene) {
-        int index1 = new Random().nextInt(gene.size());
-        int index2 = new Random().nextInt(gene.size());
+        int index1 = random.nextInt(gene.size());
+        int index2 = random.nextInt(gene.size());
         Collections.swap(gene, index1, index2);
     }
 
     // Updated evolvePopulation method
     // Updated evolvePopulation method
     public static List<List<Integer>> evolvePopulation(List<List<Integer>> population, List<Double> fitnessScores) {
-        if (populationSize < 10) {
-            // Handle the case when the population size is too small
-            System.out.println("Population size is too small for evolution.");
-            return population;
-        }
-
-        double totalFitness = fitnessScores.stream().mapToDouble(Double::doubleValue).sum();
-
-        // Create a copy of the population for sorting
-        List<List<Integer>> sortedPopulation = new ArrayList<>(population);
-
-        // Sort the sortedPopulation based on fitness scores using a custom Comparator
-        sortedPopulation.sort((code1, code2) -> {
-            int index1 = population.indexOf(code1);
-            int index2 = population.indexOf(code2);
-            double fitness1 = fitnessScores.get(index1);
-            double fitness2 = fitnessScores.get(index2);
-            return Double.compare(fitness1, fitness2);
-        });
-
-        int bestCount = populationSize / 30; // Best 10%
-        bestCount = Math.min(bestCount, populationSize); // Ensure bestCount doesn't exceed population size
-        int worstCount = populationSize / 30; // Worst 10%
-        worstCount = Math.min(worstCount, populationSize); // Ensure worstCount doesn't exceed population size
-        int middleCount = populationSize - bestCount - worstCount; // Middle 80%
-
+        // Create a new population to store the modified genes
         List<List<Integer>> newPopulation = new ArrayList<>();
 
-        // Include the best gene directly
-        if (!eliteGenes.isEmpty()) {
-            newPopulation.add(new ArrayList<>(eliteGenes.get(0)));
-            bestCount--; // Decrement the count of best genes to account for the elite gene
-        }
-
-        // Include parents from the best 10% for crossover
-        for (int i = 0; i < bestCount; i++) {
-            int parentIndex1 = selectParentByFitness(fitnessScores, totalFitness);
-            int parentIndex2 = selectParentByFitness(fitnessScores, totalFitness);
-
-            if (parentIndex1 < fitnessScores.size() && parentIndex2 < fitnessScores.size()) {
-                List<Integer> parent1 = new ArrayList<>(sortedPopulation.get(parentIndex1));
-                List<Integer> parent2 = new ArrayList<>(sortedPopulation.get(parentIndex2));
-
-                // Perform crossover
-                List<Integer> offspring1 = crossover(parent1, parent2);
-                List<Integer> offspring2 = crossover(parent2, parent1);
-
-                newPopulation.add(offspring1);
-                newPopulation.add(offspring2);
-            } else {
-                // Handle the case where the index is out of bounds
-                // You can choose to add a random genetic code or handle it differently.
-                newPopulation.add(generateGeneticCode());
-                newPopulation.add(generateGeneticCode());
-            }
-        }
-
-        // Perform crossover for the middle 80%
-        for (int i = 0; i < middleCount; i += 2) {
-            if (i + 1 < bestCount + middleCount) {
-                int parentIndex1 = selectParentByFitness(fitnessScores, totalFitness);
-                int parentIndex2 = selectParentByFitness(fitnessScores, totalFitness);
-
-                if (parentIndex1 < fitnessScores.size() && parentIndex2 < fitnessScores.size()) {
-                    List<Integer> parent1 = new ArrayList<>(sortedPopulation.get(parentIndex1));
-                    List<Integer> parent2 = new ArrayList<>(sortedPopulation.get(parentIndex2));
-
-                    // Perform crossover
-                    List<Integer> offspring1 = crossover(parent1, parent2);
-                    List<Integer> offspring2 = crossover(parent2, parent1);
-
-                    newPopulation.add(offspring1);
-                    newPopulation.add(offspring2);
-                } else {
-                    // Handle the case where the index is out of bounds
-                    // You can choose to add a random genetic code or handle it differently.
-                    newPopulation.add(generateGeneticCode());
-                    newPopulation.add(generateGeneticCode());
+        for (List<Integer> gene : population) {
+            if (gene.size() < length) {
+                // If the gene size is less than the target length, add 'n' sized elements to it
+                List<Integer> newGene = new ArrayList<>(gene);
+                for (int i = 0; i < n; i++) {
+                    int randomGene = generateRandomGene(newGene);
+                    newGene.add(randomGene);
                 }
+                newPopulation.add(newGene);
             } else {
-                // If there's an odd number of parents, add one of them directly
-                int parentIndex = i + bestCount;
-                if (parentIndex < sortedPopulation.size()) {
-                    newPopulation.add(new ArrayList<>(sortedPopulation.get(parentIndex)));
-                } else {
-                    // If parentIndex is out of bounds, add a new random genetic code
-                    newPopulation.add(generateGeneticCode());
-                }
+                // If the gene size is equal to or greater than the target length, keep the gene as is
+                newPopulation.add(gene);
             }
         }
 
-        // Introduce mutation
-        for (int i = 0; i < populationSize-1; i++) {
-            if (Math.random() < mutationRate) {
-                mutate(newPopulation.get(i)); // Call the mutate function
-            }
-        }
+        // Replace the old population with the new one
+        population = newPopulation;
 
-        // Randomly generate new individuals for the remaining slots
-        while (newPopulation.size() < populationSize) {
-            newPopulation.add(generateGeneticCode());
-        }
-
-        return newPopulation;
+        return population;
     }
 
     public static int selectParentByFitness(List<Double> fitnessScores, double totalFitness) {
-        double randomValue = Math.random() * totalFitness;
+        double randomValue = random.nextDouble() * totalFitness;
         double cumulativeFitness = 0;
 
         for (int i = 0; i < fitnessScores.size(); i++) {
@@ -238,6 +170,7 @@ public class algoIranyito2 {
         }
         return fitnessScores.size() - 1;
     }
+
     public static List<Integer> crossover(List<Integer> parent1, List<Integer> parent2) {
         if (length <= 0) {
             throw new IllegalStateException("Invalid length");
@@ -246,38 +179,39 @@ public class algoIranyito2 {
         List<Integer> offspring = new ArrayList<>(length);
 
         // Randomly choose a crossover point
-        int crossoverPoint = new Random().nextInt(length);
+        int crossoverPoint = random.nextInt(length);
 
-        // Swap genes from the end of parent1 with the beginning of parent2
+        // Include genes from the elite parents
+        for (int i = 0; i < crossoverPoint; i++) {
+            offspring.add(parent1.get(i));
+        }
+
+        // Include genes from parent2 that are not already in the offspring
         for (int i = 0; i < length; i++) {
-            if (i < crossoverPoint) {
-                offspring.add(parent1.get(i));
-            } else {
-                // If we've reached the end of parent1's genes, start adding from parent2
-                int gene = parent2.get(i);
-                if (!offspring.contains(gene)) {
-                    offspring.add(gene);
-                } else {
-                    // If the gene is already in the offspring, find the first available gene
-                    for (int j = 1; j <= length; j++) {
-                        if (!offspring.contains(j)) {
-                            offspring.add(j);
-                            break;
-                        }
-                    }
-                }
+            int gene = parent2.get(i);
+            if (!offspring.contains(gene)) {
+                offspring.add(gene);
             }
+        }
+
+        // Fill the remaining slots with random genes
+        while (offspring.size() < length) {
+            int randomGene = generateRandomGene(offspring);
+            offspring.add(randomGene);
         }
 
         return offspring;
     }
 
-    public static void printGenerationInfo(int generation, double bestFitness, double averageFitness, List<Double> fitnessScores) {
-        //System.out.println("Generation " + generation + " - Best Fitness: " + bestFitness + " - Average Fitness: " + averageFitness);
+    private static int generateRandomGene(List<Integer> excludeList) {
+        int gene;
+        do {
+            gene = random.nextInt(length) + 1;
+        } while (excludeList.contains(gene));
+        return gene;
+    }
 
-        //System.out.println("Fitness Values:");
-        for (int i = 0; i < populationSize; i++) {
-            //System.out.println("Individual " + i + ": " + fitnessScores.get(i));
-        }
+    public static void printGenerationInfo(int generation, double bestFitness, double averageFitness, List<Double> fitnessScores) {
+        System.out.println("Generation " + generation + " - Best Fitness: " + bestFitness + " - Average Fitness: " + averageFitness);
     }
 }

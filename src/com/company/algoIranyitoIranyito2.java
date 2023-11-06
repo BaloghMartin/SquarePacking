@@ -25,7 +25,7 @@ public class algoIranyitoIranyito2 {
         try {
             writer = new PrintWriter(new FileWriter(filePath));
 
-            while (n <=200 ) {
+            while (n <=12 ) {
                 double opt = 0;
                 int optV2 = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6));
                 int m=n+1;
