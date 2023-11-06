@@ -10,7 +10,7 @@ import java.util.List;
 
 public class algoIranyitoIranyito2 {
     public static void main(String[] args) {
-        int n = 10;
+        int n = 5;
         PrintWriter writer = null;
 
         // Get the current date and time
@@ -25,7 +25,7 @@ public class algoIranyitoIranyito2 {
         try {
             writer = new PrintWriter(new FileWriter(filePath));
 
-            while (n <=12 ) {
+            while (n <=100 ) {
                 double opt = 0;
                 int optV2 = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6));
                 int m=n+1;
@@ -38,7 +38,7 @@ public class algoIranyitoIranyito2 {
                    // giveUP++;
 
                     result = algoIranyito2.main(n);
-
+                    System.out.println(result.toString());
                     solution = Spiral.placeSquaresAndReturnArray(result);
 
                   // if (solution.length<=((int) Math.ceil(Math.sqrt(m * (m + 1) * (2 * m + 1) / 6)))){
