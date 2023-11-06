@@ -7,6 +7,8 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-        algoIranyitoIranyito.main(args);
+       algoIranyitoIranyito2.main(args);
+
+
 
 }}
