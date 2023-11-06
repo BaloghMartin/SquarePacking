@@ -37,7 +37,7 @@ public class algoIranyitoIranyito2 {
                 //while(true) {
                    // giveUP++;
 
-                    result = algoIranyito2.main(n);
+                    result = algoIranyito2MULTI.main(n);
                     System.out.println(result.toString());
                     solution = Spiral.placeSquaresAndReturnArray(result);
 

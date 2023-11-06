@@ -1,9 +1,9 @@
 package com.company;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.*;
 
-public class algoIranyito2 {
+public class algoIranyito2MULTI {
     private static int optV2;
     private static int length;
     private static final int populationSize = 1000;
@@ -19,7 +19,7 @@ public class algoIranyito2 {
     private static int generation = 1;
     private static double previousBestFitness = Double.MAX_VALUE;
     private static int n;
-    private static int call=0;
+    private static int call = 0;
 
     public static List<Integer> generateGeneticCodeWithN(int len, int n) {
         List<Integer> geneticCode = new ArrayList<>();
@@ -73,15 +73,13 @@ public class algoIranyito2 {
     }
 
 
-
     public static List<Integer> main(int len) {
-
         length = len;
         eliteGenes = new ArrayList<>();
         eliteFitness = Double.MAX_VALUE;
         generation = 1;
         previousBestFitness = Double.MAX_VALUE;
-        algoIranyito2.n = len;
+        algoIranyito2MULTI.n = len;
         call++;
 
         optV2 = (int) Math.ceil(Math.sqrt(len * (len + 1) * (2 * len + 1) / 6));
@@ -92,7 +90,6 @@ public class algoIranyito2 {
 
         if (call == 1) {
             // If it's the first generation, initialize the population
-
             length = len; // Set the length of the gene
 
             // Generate the initial population
@@ -104,7 +101,6 @@ public class algoIranyito2 {
 
         if (call > 1) {
             System.out.println("hey");
-
             for (List<Integer> geneticCode : population) {
                 addIntegerToGene(geneticCode, len);
             }
@@ -117,7 +113,6 @@ public class algoIranyito2 {
             population = evolvePopulation(population, fitnessScores);
             fitnessScores = evaluatePopulation(population);
 
-            // Find the best gene and its fitness in this generation
             double bestFitness = Double.MAX_VALUE;
             List<Integer> bestGene = null;
 
@@ -130,20 +125,16 @@ public class algoIranyito2 {
                 }
             }
 
-            // Add the best gene to eliteGenes (if it's better than previous best)
             if (bestGene != null) {
-                // Save the unmutated version
                 eliteGenes.clear();
-                eliteGenes.add(bestGene);
+                eliteGenes.add(new ArrayList<>(bestGene));
                 eliteFitness = bestFitness;
 
-                // Mutate the best gene and save the mutated version
                 List<Integer> mutatedBestGene = new ArrayList<>(bestGene);
                 mutate(mutatedBestGene);
                 eliteGenes.add(mutatedBestGene);
             }
 
-            // Print generation info
             if (generation % printInterval == 0) {
                 System.out.println("Generation " + generation + " - Best Fitness: " + bestFitness);
             }
@@ -152,7 +143,6 @@ public class algoIranyito2 {
         }
 
         if (!eliteGenes.isEmpty() && eliteGenes.get(0).size() == length) {
-            // Debug: Print the best gene (elite)
             System.out.println("Best Gene (Elite): " + eliteGenes.get(0));
             return eliteGenes.get(0);
         } else {
@@ -160,17 +150,13 @@ public class algoIranyito2 {
         }
     }
 
-
-
-    // Function to perform mutation by swapping two random numbers in the gene
     public static void mutate(List<Integer> gene) {
         int index1 = random.nextInt(gene.size());
         int index2 = random.nextInt(gene.size());
         Collections.swap(gene, index1, index2);
     }
 
-    // Updated evolvePopulation method
-    // Updated evolvePopulation method
+
     public static List<List<Integer> > evolvePopulation(List<List<Integer> > population, List<Double> fitnessScores) {
         if (populationSize < 10) {
             // Handle the case when the population size is too small
@@ -281,6 +267,7 @@ public class algoIranyito2 {
         return newPopulation;
     }
 
+
     public static int selectParentByFitness(List<Double> fitnessScores, double totalFitness) {
         double randomValue = random.nextDouble() * totalFitness;
         double cumulativeFitness = 0;
@@ -294,6 +281,7 @@ public class algoIranyito2 {
         }
         return fitnessScores.size() - 1;
     }
+
 
     public static List<Integer> crossover(List<Integer> parent1, List<Integer> parent2) {
         if (length <= 0) {
@@ -327,6 +315,7 @@ public class algoIranyito2 {
         return offspring;
     }
 
+
     private static int generateRandomGene(List<Integer> excludeList) {
         int gene;
         do {
@@ -334,18 +323,10 @@ public class algoIranyito2 {
         } while (excludeList.contains(gene));
         return gene;
     }
-    public static double calculateAverage(List<Double> fitnessScores) {
-        double sum = 0.0;
-        for (Double score : fitnessScores) {
-            sum += score;
-        }
-        return sum / fitnessScores.size();
-    }
-    public static void printGenerationInfo(int generation, double bestFitness, double averageFitness, List<Double> fitnessScores) {
-        //System.out.println("Generation " + generation + " - Best Fitness: " + bestFitness + " - Average Fitness: " + averageFitness);
-    }
 
-    // Function to add an integer to a gene at a random place
+
+
+
     public static void addIntegerToGene(List<Integer> gene, int valueToAdd) {
         // Choose a random index within the length of the gene list
         int index = ThreadLocalRandom.current().nextInt(0, gene.size() + 1);
@@ -353,6 +334,7 @@ public class algoIranyito2 {
         // Insert the value at the randomly chosen index
         gene.add(index, valueToAdd);
     }
+
     public static List<Integer> generateGeneticCode() {
         List<Integer> geneticCode = new ArrayList<>();
 
@@ -364,5 +346,29 @@ public class algoIranyito2 {
         Collections.shuffle(geneticCode);
 
         return geneticCode;
+    }
+    public static void main(String[] args) {
+        int problemSize = 16; // Set the problem size here
+        ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+
+        List<Future<List<Integer>>> results = new ArrayList<>();
+        for (int i = 0; i < problemSize; i++) {
+            final int taskNumber = i;
+            Callable<List<Integer>> callable = () -> main(problemSize);
+            Future<List<Integer>> future = executorService.submit(callable);
+            results.add(future);
+        }
+
+        for (Future<List<Integer>> result : results) {
+            try {
+                List<Integer> solution = result.get();
+                // Handle or process each solution as needed
+                System.out.println("Solution: " + solution);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        executorService.shutdown();
     }
 }
