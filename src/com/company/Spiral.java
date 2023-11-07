@@ -146,4 +146,57 @@ public class Spiral {
             hivnum++;
         }
     }
+
+    public static double placeSquaresAndReturnFitness(List<Integer> guideSequence) {
+        double fitness=1;
+        int currentGuideIndex = 0;
+        int meretHelp = guideSequence.size();
+        int hivnum = 1;
+        int optV2 = (int) Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6);
+        int[][] solution;
+
+        while (true) {
+            solution = new int[optV2 + hivnum - 1][optV2 + hivnum - 1];
+
+            while (currentGuideIndex <= guideSequence.size()) {
+                meretHelp = guideSequence.get(currentGuideIndex);
+                int[] position = findFirstZeroPosition(solution, meretHelp);
+                if (position != null) {
+                    solution = placer(solution, meretHelp, position[0], position[1]);
+                    currentGuideIndex++;
+
+                    if (currentGuideIndex >= guideSequence.size()) {
+                        fitness=fitness*zeroRatio(solution);
+                        //printSolution(solution);
+                        return fitness;
+                    }
+                } else {
+                    fitness=fitness*zeroRatio(solution);
+                    break;
+                }
+            }
+
+            currentGuideIndex = 0;
+            hivnum++;
+        }
+    }
+
+    private static double zeroRatio(int[][] solution) {
+        int totalCells = solution.length * solution[0].length; // Calculate the total number of cells in the 2D array
+        int zeroCount = 0; // Initialize a counter for zeros
+
+        // Iterate through the 2D array to count zeros
+        for (int row = 0; row < solution.length; row++) {
+            for (int col = 0; col < solution[0].length; col++) {
+                if (solution[row][col] == 0) {
+                    zeroCount++;
+                }
+            }
+        }
+
+        // Calculate the zero ratio (number of zeros / total number of cells)
+        double ratio = (double)   totalCells/zeroCount;
+
+        return ratio;
+    }
 }

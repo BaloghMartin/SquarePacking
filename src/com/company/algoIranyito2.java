@@ -6,7 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 public class algoIranyito2 {
     private static int optV2;
     private static int length;
-    private static final int populationSize = 1000;
+    private static final int populationSize = 10;
     private static final int numGenerations = 1000;
     private static final double initialMutationRate = 0.5;
     private static final double finalMutationRate = 0.1;
