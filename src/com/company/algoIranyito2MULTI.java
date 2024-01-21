@@ -6,8 +6,8 @@ import java.util.concurrent.*;
 public class algoIranyito2MULTI {
     private static int optV2;
     private static int length;
-    private static final int populationSize = 10;
-    private static final int numGenerations = 100;
+    private static final int populationSize = 1000;
+    private static final int numGenerations = 1000;
     private static final double initialMutationRate = 0.5;
     private static final double finalMutationRate = 0.1;
     private static final int elitePercentage = 10;
@@ -57,22 +57,33 @@ public class algoIranyito2MULTI {
         return geneticCode;
     }
 
+    // Fitness cache to store already computed fitness values
+    private static final Map<List<Integer>, Double> fitnessCache = new HashMap<>();
+
     public static List<Double> evaluatePopulation(List<List<Integer>> population) {
+
         List<Double> fitnessScores = new ArrayList<>();
         codeToIndexMap.clear(); // Clear the map
 
         for (int i = 0; i < population.size(); i++) {
+
+
             List<Integer> geneticCode = population.get(i);
-            codeToIndexMap.put(geneticCode, i); // Map genetic code to its index
-            //System.out.println(geneticCode.toString());
-            //int[][] solution = Spiral.placeSquaresAndReturnArray(geneticCode);
-            //double score = (double) solution.length / optV2;
-            double score=Spiral.placeSquaresAndReturnFitness(geneticCode);
-            fitnessScores.add(score);
+
+            // Check if the fitness value is already in the cache
+            if (fitnessCache.containsKey(geneticCode)) {
+                fitnessScores.add(fitnessCache.get(geneticCode));
+            } else {
+                codeToIndexMap.put(geneticCode, i); // Map genetic code to its index
+                double score = Spiral.placeSquaresAndReturnFitness(geneticCode);
+                fitnessScores.add(score);
+
+                // Cache the fitness value for future use
+                fitnessCache.put(new ArrayList<>(geneticCode), score);
+            }
         }
         return fitnessScores;
     }
-
 
     public static List<Integer> main(int len) {
         length = len;
@@ -101,12 +112,22 @@ public class algoIranyito2MULTI {
         }
 
         if (call > 1) {
-            System.out.println("hey");
+            //System.out.println(population.size());
+            //System.out.println("hey");
+            int worstCount = 2;
+            removeRandomGenes(worstCount);
+            //System.out.println(worstCount);
             for (List<Integer> geneticCode : population) {
                 addIntegerToGene(geneticCode, len);
             }
-        }
+            for (int i = 0; i < worstCount; i++) {
+                DescendGene(len);
+            }
 
+
+        }
+        //System.out.println(population.toString());
+        //System.out.println(population.size());
         List<Double> fitnessScores = evaluatePopulation(population);
         int printInterval = numGenerations / 100;
 
@@ -371,5 +392,51 @@ public class algoIranyito2MULTI {
         }
 
         executorService.shutdown();
+    }
+    public static void removeRandomGenes(double numGenesToRemove) {
+        int populationSize = population.size();
+
+        if (numGenesToRemove <= 0) {
+            return; // Nothing to remove
+        }
+
+        Random random = new Random();
+        List<Integer> indexesToRemove = new ArrayList<>();
+
+        // Check if numGenesToRemove exceeds the population size
+        if (numGenesToRemove >= populationSize) {
+            population.clear();
+            return;
+        }
+
+        // Generate random indexes to remove
+        while (indexesToRemove.size() < numGenesToRemove) {
+            int index = random.nextInt(populationSize);
+            if (!indexesToRemove.contains(index)) {
+                indexesToRemove.add(index);
+            }
+        }
+
+        // Sort indexes in descending order for removal
+        indexesToRemove.sort((i1, i2) -> Integer.compare(i2, i1));
+
+        // Remove the genes
+        for (int indexToRemove : indexesToRemove) {
+            population.remove(indexToRemove);
+        }
+    }
+
+
+    public static void DescendGene(int len) {
+        // Clear the gene
+        List<Integer> geneticCode = new ArrayList<>();
+
+        // Add genes N, N-1, N-2, ..., 4, 3, 2, 1
+        for (int i = len; i >= 1; i--) {
+
+            geneticCode.add(i);
+        }
+        population.add(geneticCode);
+
     }
 }

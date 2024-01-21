@@ -147,6 +147,40 @@ public class Spiral {
         }
     }
 
+    public static int placeSquaresAndReturnSize(List<Integer> guideSequence,int N) {
+        int currentGuideIndex = 0;
+        int meretHelp = N;
+        int hivnum = 1;
+        int optV2 = (int) Math.sqrt((N * N + 1) * (2 * N + 1) / 6);
+        int[][] solution;
+
+        while (true) {
+            solution = new int[optV2 + hivnum - 1][optV2 + hivnum - 1];
+
+            while (currentGuideIndex <= guideSequence.size()) {
+                meretHelp = guideSequence.get(currentGuideIndex);
+                //ezt kell majd átvinni
+                int[] position = findFirstZeroPosition(solution, meretHelp);
+                if (position != null) {
+                    //meg ezt
+                    solution = placer(solution, meretHelp, position[0], position[1]);
+                    currentGuideIndex++;
+
+                    if (currentGuideIndex >= guideSequence.size()) {
+                        //printSolution(solution);
+                        return solution.length;
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            currentGuideIndex = 0;
+            hivnum++;
+        }
+    }
+
+
     public static double placeSquaresAndReturnFitness(List<Integer> guideSequence) {
         double fitness=1;
         int currentGuideIndex = 0;
@@ -166,7 +200,7 @@ public class Spiral {
                     currentGuideIndex++;
 
                     if (currentGuideIndex >= guideSequence.size()) {
-                        fitness=fitness*zeroRatio(solution);
+                        //fitness=fitness*zeroRatio(solution);
                         //printSolution(solution);
                         return fitness;
                     }

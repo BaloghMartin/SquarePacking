@@ -22,33 +22,31 @@ public class algoIranyitoIranyito2 {
         String fileName = "output_" + currentDateTime + ".txt";
         String filePath = desktopPath + File.separator + fileName;
 
+        Visualizer arrayVisualization = new Visualizer(new int[0][0]); // Initialize with an empty array
+        arrayVisualization.setVisible(true);  // Set the window to visible outside the loop
+
         try {
             writer = new PrintWriter(new FileWriter(filePath));
 
-            while (n <=100 ) {
+            while (n <= 40) {
                 double opt = 0;
                 int optV2 = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6));
-                int m=n+1;
+                int m = n + 1;
                 List<Integer> result;
                 int[][] solution;
-                int giveUP=0;
+                int giveUP = 0;
                 List<Integer> resultTEMP;
                 int[][] solutionTEMP;
-                //while(true) {
-                   // giveUP++;
 
-                    result = algoIranyito2MULTI.main(n);
-                    System.out.println(result.toString());
-                    solution = Spiral.placeSquaresAndReturnArray(result);
+                result = algoIranyito2MULTI.main(n);
+                System.out.println(result.toString());
+                solution = Spiral.placeSquaresAndReturnArray(result);
 
-                  // if (solution.length<=((int) Math.ceil(Math.sqrt(m * (m + 1) * (2 * m + 1) / 6)))){
+                arrayVisualization.updateVisualization(solution);
 
-                    //   break;}
-
-                    //}
-                String output = String.format("n = %d, lb: %d, Sol: %d, ar: %.5f", n,optV2, solution.length, (double)solution.length/optV2);
+                String output = String.format("n = %d, lb: %d, Sol: %d, ar: %.5f", n, optV2, solution.length, (double) solution.length / optV2);
                 System.out.println(output);
-                output = String.format("n = %d, lb: %d, Sol: %d, genetic code: %s", n,optV2, solution.length, result.toString());
+                output = String.format("n = %d, lb: %d, Sol: %d, genetic code: %s", n, optV2, solution.length, result.toString());
                 writer.println(output);
 
                 writer.flush(); // Flush the writer to save the content immediately
