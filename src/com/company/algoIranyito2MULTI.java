@@ -6,8 +6,8 @@ import java.util.concurrent.*;
 public class algoIranyito2MULTI {
     private static int optV2;
     private static int length;
-    private static final int populationSize = 1000;
-    private static final int numGenerations = 1000;
+    private static final int populationSize = 10;
+    private static final int numGenerations = 100;
     private static final double initialMutationRate = 0.5;
     private static final double finalMutationRate = 0.1;
     private static final int elitePercentage = 10;

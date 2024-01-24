@@ -7,7 +7,7 @@ import java.util.List;
 public class Main {
 
     public static void main(String[] args) {
-       //algoIranyitoIranyito2.main(args);
+       algoIranyitoIranyito2.main(args);
         int N = 5; // Change N to the desired value
 
         // Step 1: Instantiate an OrderTree object

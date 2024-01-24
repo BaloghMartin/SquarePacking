@@ -36,7 +36,7 @@ public class Spiral {
         }
     }
 
-    private static int[][] placer(int[][] solution, int meret, int n, int m) {
+    static int[][] placer(int[][] solution, int meret, int n, int m) {
         for (int i = n; i < n + meret; i++) {
             for (int j = m; j < m + meret; j++) {
                 solution[i][j] = meret;
