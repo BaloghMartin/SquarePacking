@@ -116,7 +116,7 @@ class OrderTree {
         }
 
         // Check the elapsed time and terminate if the time limit is reached
-        if (elapsedTime >= 6 * 60 * 1000) {
+        if (elapsedTime >= 1 * 60 * 1000) {
             System.out.println("Terminating. Time limit reached.");
             terminate = true;
             timerTermination = true;
@@ -174,7 +174,7 @@ class OrderTree {
         for (int i = 15; i < 1000; i++) {
 
             int n = i + 1;
-            int targetFitness= (int) Math.sqrt((n * n + 1) * (2 * n + 1) / 6);
+            int targetFitness= (int) Math.ceil(Math.sqrt(((n *( n + 1)) * ((2 * n) + 1)) / 6));
             OrderTree orderTree = new OrderTree(n, targetFitness+countdown);
 
             List<Integer> bestGene = orderTree.getBestGene();

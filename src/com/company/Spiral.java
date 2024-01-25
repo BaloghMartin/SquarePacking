@@ -120,7 +120,7 @@ public class Spiral {
         int currentGuideIndex = 0;
         int meretHelp = guideSequence.size();
         int hivnum = 1;
-        int optV2 = (int) Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6);
+        int optV2 = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
         int[][] solution;
 
         while (true) {
@@ -151,7 +151,7 @@ public class Spiral {
         int currentGuideIndex = 0;
         int meretHelp = N;
         int hivnum = 1;
-        int optV2 = (int) Math.sqrt((N * N + 1) * (2 * N + 1) / 6);
+        int optV2= (int) Math.sqrt(((N *( N + 1)) * ((2 * N) + 1)) / 6);
         int[][] solution;
 
         while (true) {
