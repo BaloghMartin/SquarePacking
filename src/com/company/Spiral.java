@@ -147,15 +147,19 @@ public class Spiral {
         }
     }
 
-    public static int placeSquaresAndReturnSize(List<Integer> guideSequence,int N) {
+    public static int placeSquaresAndReturnSize(List<Integer> guideSequence,int N, int MAX) {
         int currentGuideIndex = 0;
         int meretHelp = N;
         int hivnum = 1;
-        int optV2= (int) Math.sqrt(((N *( N + 1)) * ((2 * N) + 1)) / 6);
+        int optV2 = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
         int[][] solution;
 
         while (true) {
             solution = new int[optV2 + hivnum - 1][optV2 + hivnum - 1];
+
+            if((optV2 + hivnum - 1)>=MAX){
+                //
+                return solution.length+1;}
 
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);

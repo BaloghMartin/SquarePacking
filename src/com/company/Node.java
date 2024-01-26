@@ -66,13 +66,13 @@ class OrderTree {
     private void generatePermutations(Node node, boolean[] used, int remaining) {
         long elapsedTime = System.currentTimeMillis() - startTime;
 
-        int fitness = calculateFitness(node.gene, node.N);
-        node.fitness = fitness;
-
-        List<Integer> reversedGene = new ArrayList<>(node.gene);
-        Collections.reverse(reversedGene);
-
         if (node.isLeaf()) {
+            int fitness = calculateFitness(node.gene, node.N);
+            node.fitness = fitness;
+
+            List<Integer> reversedGene = new ArrayList<>(node.gene);
+            Collections.reverse(reversedGene);
+
             if (node.fitness < bestFitness) {
                 bestGene = new ArrayList<>(node.gene);
                 bestFitness = node.fitness;
@@ -115,13 +115,16 @@ class OrderTree {
             }
         }
 
+
         // Check the elapsed time and terminate if the time limit is reached
-        if (elapsedTime >= 1 * 60 * 1000) {
+
+        if (elapsedTime >= 60 * 60 * 1000) {
             System.out.println("Terminating. Time limit reached.");
             terminate = true;
             timerTermination = true;
         }
     }
+
 
     private int calculateFitness(List<Integer> gene, int N) {
         if (gene.isEmpty()) {
@@ -129,9 +132,10 @@ class OrderTree {
         }
 
         List<Integer> reversedGene = new ArrayList<>(gene);
-        Collections.reverse(reversedGene);
 
-        return Spiral.placeSquaresAndReturnSize(reversedGene, N);
+        Collections.reverse(reversedGene);
+        //System.out.println(reversedGene.toString());
+        return Spiral.placeSquaresAndReturnSize(reversedGene, N, bestFitness);
     }
 
     private Node findParent(Node currentNode, Node targetNode) {
@@ -171,10 +175,11 @@ class OrderTree {
         Visualizer arrayVisualization = new Visualizer(new int[0][0]);
         arrayVisualization.setVisible(true);
         writer = new PrintWriter(new FileWriter(filePath));
-        for (int i = 15; i < 1000; i++) {
+        for (int i = 65; i < 1000; i++) {
 
             int n = i + 1;
-            int targetFitness= (int) Math.ceil(Math.sqrt(((n *( n + 1)) * ((2 * n) + 1)) / 6));
+            int targetFitness= (int) Math.ceil(Math.sqrt(((n *( n+ 1)) * ((2 * n) + 1)) / 6));
+            //int targetFitness= (int) Math.ceil(Math.sqrt((((n+1) *(( n+1 )+ 1)) * ((2 * (n+1)) + 1)) / 6));
             OrderTree orderTree = new OrderTree(n, targetFitness+countdown);
 
             List<Integer> bestGene = orderTree.getBestGene();
