@@ -117,12 +117,12 @@ class OrderTree {
 
 
         // Check the elapsed time and terminate if the time limit is reached
-
-        if (elapsedTime >= 60 * 60 * 1000) {
+        /*
+        if (elapsedTime >= 30 * 60 * 1000) {
             System.out.println("Terminating. Time limit reached.");
             terminate = true;
             timerTermination = true;
-        }
+        }*/
     }
 
 
@@ -175,7 +175,7 @@ class OrderTree {
         Visualizer arrayVisualization = new Visualizer(new int[0][0]);
         arrayVisualization.setVisible(true);
         writer = new PrintWriter(new FileWriter(filePath));
-        for (int i = 65; i < 1000; i++) {
+        for (int i = 98; i < 1000; i++) {
 
             int n = i + 1;
             int targetFitness= (int) Math.ceil(Math.sqrt(((n *( n+ 1)) * ((2 * n) + 1)) / 6));
