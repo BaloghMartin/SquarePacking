@@ -175,7 +175,7 @@ class OrderTree {
         Visualizer arrayVisualization = new Visualizer(new int[0][0]);
         arrayVisualization.setVisible(true);
         writer = new PrintWriter(new FileWriter(filePath));
-        for (int i = 98; i < 1000; i++) {
+        for (int i = 5; i < 18; i++) {
 
             int n = i + 1;
             int targetFitness= (int) Math.ceil(Math.sqrt(((n *( n+ 1)) * ((2 * n) + 1)) / 6));
