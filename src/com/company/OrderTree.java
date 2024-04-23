@@ -1,0 +1,121 @@
+/*package com.company;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class OrderTree implements Serializable {
+    private Node root;
+    private List<Integer> bestGene;
+    private int bestFitness;
+    private int targetFitness;
+    private transient boolean terminate = false; // Flag to indicate termination
+    private transient long startTime; // Start time of the OrderTree
+
+    public OrderTree(int N, int targetFitness) {
+        root = new Node(new ArrayList<>(), 0, N);
+        bestGene = new ArrayList<>();
+        bestFitness = Integer.MAX_VALUE;
+        this.targetFitness = targetFitness;
+        startTime = System.currentTimeMillis(); // Record the start time
+        generatePermutations(root, new boolean[N + 1], N);
+        System.out.println("Best Gene: " + bestGene + ", Best Fitness: " + bestFitness);
+    }
+
+    public List<Integer> getBestGene() {
+        return bestGene;
+    }
+
+    public int getBestFitness() {
+        return bestFitness;
+    }
+
+    public boolean isTerminated() {
+        return terminate;
+    }
+
+    private void generatePermutations(Node node, boolean[] used, int remaining) {
+        long elapsedTime = System.currentTimeMillis() - startTime;
+
+        if (elapsedTime >= OrderTreeController.TIME_LIMIT_PER_N) {
+            System.out.println("Terminating for n=" + node.N + " after time limit reached.");
+            terminate = true;
+            return;
+        }
+
+        if (node.isLeaf()) {
+            int fitness = calculateFitness(node.gene, node.N);
+            node.fitness = fitness;
+
+            List<Integer> reversedGene = new ArrayList<>(node.gene);
+            Collections.reverse(reversedGene);
+
+            if (node.fitness < bestFitness) {
+                bestGene = new ArrayList<>(node.gene);
+                bestFitness = node.fitness;
+                System.out.println("Reversed Gene: " + reversedGene + ", Fitness: " + node.fitness);
+                if (bestFitness <= targetFitness) {
+                    System.out.println("Terminating. Best Fitness reached targetFitness or is below.");
+                    terminate = true;
+                    return;
+                }
+            }
+        }
+
+        if (remaining == 0) {
+            node.children.clear();
+            if (!node.hasChildren()) {
+                if (node != root) {
+                    Node parent = findParent(root, node);
+                    if (parent != null) {
+                        parent.children.remove(node);
+                    }
+                }
+            }
+            return;
+        }
+
+        for (int i = 1; i <= used.length - 1; i++) {
+            if (!used[i]) {
+                used[i] = true;
+                List<Integer> childGene = new ArrayList<>(node.gene);
+                childGene.add(i);
+                Node childNode = new Node(childGene, 0, node.N);
+                node.addChild(childNode);
+                generatePermutations(childNode, used, remaining - 1);
+
+                if (terminate) {
+                    return;
+                }
+
+                used[i] = false;
+            }
+        }
+    }
+
+    private int calculateFitness(List<Integer> gene, int N) {
+        if (gene.isEmpty()) {
+            return 0;
+        }
+
+        List<Integer> reversedGene = new ArrayList<>(gene);
+        Collections.reverse(reversedGene);
+
+        return Spiral.placeSquaresAndReturnSize(reversedGene, N, bestFitness);
+    }
+
+    private Node findParent(Node currentNode, Node targetNode) {
+        for (Node child : currentNode.children) {
+            if (child == targetNode) {
+                return currentNode;
+            } else {
+                Node parent = findParent(child, targetNode);
+                if (parent != null) {
+                    return parent;
+                }
+            }
+        }
+        return null;
+    }
+}*/

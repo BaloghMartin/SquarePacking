@@ -175,10 +175,14 @@ class OrderTree {
         Visualizer arrayVisualization = new Visualizer(new int[0][0]);
         arrayVisualization.setVisible(true);
         writer = new PrintWriter(new FileWriter(filePath));
-        for (int i = 5; i < 18; i++) {
-
-            int n = i + 1;
-            int targetFitness= (int) Math.ceil(Math.sqrt(((n *( n+ 1)) * ((2 * n) + 1)) / 6));
+        for (int i = 5; i < 30; i++) {
+            int targetFitness;
+            int n = i;
+            if(n<=56){
+                 targetFitness=targetFitnessValues[n-1];
+            }
+            else{
+             targetFitness= (int) Math.ceil(Math.sqrt(((n *( n+ 1)) * ((2 * n) + 1)) / 6));}
             //int targetFitness= (int) Math.ceil(Math.sqrt((((n+1) *(( n+1 )+ 1)) * ((2 * (n+1)) + 1)) / 6));
             OrderTree orderTree = new OrderTree(n, targetFitness+countdown);
 
@@ -192,7 +196,7 @@ class OrderTree {
             int[][] solution = Spiral.placeSquaresAndReturnArray(reversedBestGene);
             System.out.println(solution.length + " ennyi az annyi");
             arrayVisualization.updateVisualization(solution);
-            String output = String.format("n = %d, lbTher: %d, Sol: %d", n, targetFitness, solution.length);
+            String output = String.format("n = %d, lbTher: %d, Sol: %d gene: %s", n, targetFitness, solution.length,reversedBestGene.toString());
             writer.println(output);
 
             writer.flush();
