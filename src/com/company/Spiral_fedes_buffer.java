@@ -1,10 +1,9 @@
-
 package com.company;
 
-        import java.util.ArrayList;
-        import java.util.List;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Spiral_fedes {
+public class Spiral_fedes_buffer {
     public static double placeSquares(List<Integer> guideSequence) {
         int currentGuideIndex = 0;
         int meretHelp = guideSequence.size();
@@ -121,18 +120,22 @@ public class Spiral_fedes {
 
     public static int[][] placeSquaresAndReturnArray(List<Integer> guideSequence) {
         int currentGuideIndex = 0;
+
         int meretHelp = guideSequence.size();
         int hivnum = 0;
         int optV2 = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
         int[][] solution;
 
+
         while (true) {
+            List<Integer> leftOut = new ArrayList<>();
             solution = new int[optV2 - hivnum][optV2 - hivnum];
             System.out.println(solution.length);
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);
-
+                //megkeresni az első helyet ahová hibátlanul befér
                 int[] position = findFirstZeroPosition(solution, meretHelp);
+                //ha van ilyen hely
                 if (position != null) {
                     //System.out.println(meretHelp);
                     solution = placer(solution, meretHelp, position[0], position[1]);
@@ -143,35 +146,54 @@ public class Spiral_fedes {
                         break;
                         //return solution;
                     }
+                    //ha nincs ilyen:
                 } else {
-                    position = findBestPosition(solution, meretHelp);
-                    if (position != null) {
-                        solution = placer(solution, meretHelp, position[0], position[1]);
-                        currentGuideIndex++;
 
-                        if (currentGuideIndex >= guideSequence.size()) {
-                            //printSolution(solution);
-                            break;
-                            //return solution;
-                        } else {
-                            //System.out.println(meretHelp);
-                            //solution = placer(solution, meretHelp, 0, 0);
-                        }
-
-                        //break;
+                    leftOut.add(meretHelp);
+                    currentGuideIndex++;
+                    if (currentGuideIndex >= guideSequence.size()) {
+                        //printSolution(solution);
+                        break;
+                        //return solution;
                     }
                 }
             }
+            int leftOutGuideIndex = 0;
 
+
+            if (!leftOut.isEmpty()) {
+                while (leftOutGuideIndex <= leftOut.size()) {
+                    System.out.println(leftOut.get(leftOutGuideIndex).toString());
+                    meretHelp = leftOut.get(leftOutGuideIndex);
+                    int position2[] = findBestPosition(solution, meretHelp);
+                    if (position2 != null) {
+                        solution = placer(solution, meretHelp, position2[0], position2[1]);
+                        leftOutGuideIndex++;
+                        //System.out.println("index" + leftOutGuideIndex);
+                        //System.out.println("size" + leftOut.size());
+                        if (leftOutGuideIndex >= leftOut.size()) {
+                            //System.out.println("ITT");
+                            break;
+                        }
+                    }
+                }
+            } else {
+                break;
+            }
+            if(solution.length==560){return solution;}
+            //System.out.println("ITT");
             boolean full = ellenorzo(solution);
-            if (full==true) {
+            if (full == true) {
                 return solution;
             } else {
                 currentGuideIndex = 0;
                 hivnum++;
             }
+
         }
+        return solution;
     }
+
 
     private static boolean ellenorzo(int[][] solution) {
         //printSolution(solution);
@@ -224,7 +246,7 @@ public class Spiral_fedes {
     }
 
 
-    public static double placeSquaresAndReturnFitness(List<Integer>guideSequence) {
+    public static double placeSquaresAndReturnFitness(List<Integer> guideSequence) {
         double fitness = 1;
         int currentGuideIndex = 0;
         int meretHelp = guideSequence.size();
@@ -352,7 +374,7 @@ public class Spiral_fedes {
         return score;
     }
     public static void main(String[] args) {
-        java.util.List<Integer> guideSequence = new ArrayList<>();
+        List<Integer> guideSequence = new ArrayList<>();
         for(int i=100;i>0;i--){
             guideSequence.add(i);}
 
