@@ -1,6 +1,9 @@
 package com.company;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -373,15 +376,23 @@ class OrderTree {
         arrayVisualization.setVisible(true);
         writer = new PrintWriter(new FileWriter(filePath));
 
-        for (int i = 5; i < 100; i++) {
+        for (int i = 5; i < 1000; i++) {
             int targetFitness;
             int n = i;
-            if (n <= 56) {
-                targetFitness = targetFitnessValues[n - 1];
+            //System.out.println(n+1);
+            int k = n;
+            if (k <= 56) {
+                targetFitness = targetFitnessValues[k - 1];
             } else {
-                targetFitness = (int) Math.ceil(Math.sqrt(((n * (n + 1)) * ((2 * n) + 1)) / 6));
+                targetFitness = (int) Math.ceil(Math.sqrt(((k * (k + 1)) * ((2 * k) + 1)) / 6));
             }
-            targetFitness=targetFitness;
+            //if(n==16){targetFitness++;}
+            targetFitness=(int)Math.floor((targetFitness*1.019));
+            System.out.println(targetFitness);
+            //targetFitness=99999999;
+            //targetFitness++;
+            System.out.println(n);
+            //targetFitness=targetFitness;
             OrderTree orderTree = new OrderTree(n, targetFitness + countdown);
 
             List<Integer> bestGene = orderTree.getBestGene(n);
@@ -468,15 +479,33 @@ class OrderTree {
     }
 
     private static void updateCheckedFile(LastGeneTracker lastGeneTracker, String filePath) {
-        try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
+        try {
+            // Read existing content of the file
+            List<String> lines = Files.readAllLines(Paths.get(filePath), StandardCharsets.UTF_8);
+
+            // Iterate over the N values in the LastGeneTracker
             for (Integer N : lastGeneTracker.getNs()) {
                 List<Integer> gene = lastGeneTracker.getBestGene(N);
-                writer.println(N + ":" + gene.toString());
+                String newLine = N + ":" + gene.toString();
+
+                // Find the line corresponding to the current N value
+                for (int i = 0; i < lines.size(); i++) {
+                    String line = lines.get(i);
+                    if (line.startsWith(N + ":")) {
+                        // Replace the line with the new information
+                        lines.set(i, newLine);
+                        break; // Exit the loop since the line has been found and replaced
+                    }
+                }
             }
+
+            // Write the updated content back to the file
+            Files.write(Paths.get(filePath), lines, StandardCharsets.UTF_8);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
     private static void updateSolutionsFile(Map<Integer, List<Integer>> existingSolutions, String filePath) {
         try (PrintWriter writer = new PrintWriter(new FileWriter(filePath))) {
             for (Map.Entry<Integer, List<Integer>> entry : existingSolutions.entrySet()) {
