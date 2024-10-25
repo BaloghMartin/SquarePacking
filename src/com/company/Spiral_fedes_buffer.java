@@ -3,6 +3,8 @@ package com.company;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Collections;
+
 public class Spiral_fedes_buffer {
     public static double placeSquares(List<Integer> guideSequence) {
         int currentGuideIndex = 0;
@@ -162,6 +164,7 @@ public class Spiral_fedes_buffer {
 
 
             if (!leftOut.isEmpty()) {
+                Collections.reverse(leftOut);
                 while (leftOutGuideIndex <= leftOut.size()) {
                     System.out.println(leftOut.get(leftOutGuideIndex).toString());
                     meretHelp = leftOut.get(leftOutGuideIndex);
@@ -180,7 +183,7 @@ public class Spiral_fedes_buffer {
             } else {
                 break;
             }
-            if(solution.length==560){return solution;}
+
             //System.out.println("ITT");
             boolean full = ellenorzo(solution);
             if (full == true) {
@@ -378,7 +381,7 @@ public class Spiral_fedes_buffer {
         for(int i=100;i>0;i--){
             guideSequence.add(i);}
 
-        int[][] res = Spiral_fedes.placeSquaresAndReturnArray(guideSequence);
+        int[][] res = Spiral_fedes_buffer.placeSquaresAndReturnArray(guideSequence);
         Visualizer arrayVisualization = new Visualizer(new int[0][0]);
         arrayVisualization.setVisible(true);
         arrayVisualization.updateVisualization(res);

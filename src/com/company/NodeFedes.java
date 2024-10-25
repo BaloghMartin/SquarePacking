@@ -7,13 +7,13 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-class Node {
+class NodeFedes {
     List<Integer> gene;
     List<Node> children;
     int N;
     int fitness;
 
-    public Node(List<Integer> gene, int fitness, int N) {
+    public NodeFedes(List<Integer> gene, int fitness, int N) {
         this.N = N;
         this.gene = gene;
         this.children = new ArrayList<>();
@@ -33,17 +33,17 @@ class Node {
     }
 }
 
-class BestGeneTracker {
+class BestGeneTrackerFedes {
     private Map<Integer, List<Integer>> bestGenes;
     private Map<Integer, Integer> bestFitnessValues;
 
-    public BestGeneTracker(Map<Integer, List<Integer>> existingSolutions) {
+    public BestGeneTrackerFedes(Map<Integer, List<Integer>> existingSolutions) {
         this.bestGenes = new HashMap<>(existingSolutions);
         this.bestFitnessValues = new HashMap<>();
         for (Map.Entry<Integer, List<Integer>> entry : existingSolutions.entrySet()) {
             int N = entry.getKey();
             List<Integer> gene = entry.getValue();
-            int fitness = Spiral.placeSquaresAndReturnSize(gene, N, Integer.MAX_VALUE);
+            int fitness = Spiral_fedes.placeSquaresAndReturnArray(gene).length;
             //System.out.println("N:" + N +" fitness:" + fitness +" gene: " + gene.toString());
             bestFitnessValues.put(N, fitness);
         }
@@ -71,11 +71,11 @@ class BestGeneTracker {
     }
 }
 
-class LastGeneTracker {
+class LastGeneTrackerFedes {
     private Map<Integer, List<Integer>> lastGenes;
     private Map<Integer, Integer> amountChecked;
 
-    public LastGeneTracker(Map<Integer, List<Integer>> existingLastGenes) {
+    public LastGeneTrackerFedes(Map<Integer, List<Integer>> existingLastGenes) {
         this.lastGenes = new HashMap<>(existingLastGenes);
         this.amountChecked = new HashMap<>();
     }
@@ -104,7 +104,7 @@ class LastGeneTracker {
 }
 
 
-class OrderTree {
+class OrderTreeFedes {
     private BestGeneTrackerFedes bestGeneTracker;
     private LastGeneTrackerFedes lastGeneTracker;
     public Node root;
@@ -112,12 +112,12 @@ class OrderTree {
     private boolean terminate = false;
     private long startTime;
     String desktopPath = System.getProperty("user.home") + File.separator + "Desktop";
-    String fileName = "solutions.txt";
+    String fileName = "solutions2.txt";
     String filePath = desktopPath + File.separator + fileName;
-    String fileName2 = "checked.txt";
+    String fileName2 = "checked2.txt";
     String filePath2 = desktopPath + File.separator + fileName2;
 
-    public OrderTree(int N, int targetFitness) {
+    public OrderTreeFedes(int N, int targetFitness) {
         this.bestGeneTracker = new BestGeneTrackerFedes(loadExistingSolutionsFromFile(filePath));
         //System.out.println("Loaded existing solutions from file: " + filePath);
 
@@ -171,10 +171,10 @@ class OrderTree {
             Collections.reverse(reversedGene);
             //System.out.println("Reversed Gene: " + reversedGene + ", Fitness: " + node.fitness);
 
-            if (node.fitness < bestGeneTracker.getBestFitness(node.N)) {
+            if (node.fitness > bestGeneTracker.getBestFitness(node.N)) {
                 bestGeneTracker.updateBestGene(node.N, new ArrayList<>(node.gene), node.fitness);
                 //System.out.println("New Best Gene: " + node.gene + ", Fitness: " + node.fitness);
-                if (node.fitness <= targetFitness) {
+                if (node.fitness >= targetFitness) {
                     //System.out.println("Terminating. Best Fitness reached targetFitness or is below.");
                     terminate = true;
                     return;
@@ -221,7 +221,7 @@ class OrderTree {
 
         List<Integer> reversedGene = new ArrayList<>(gene);
         Collections.reverse(reversedGene);
-        return Spiral.placeSquaresAndReturnSize(reversedGene, N, bestGeneTracker.getBestFitness(N));
+        return Spiral_fedes.placeSquaresAndReturnArray(reversedGene).length;
     }
 
     private static Node findParent(Node currentNode, Node targetNode) {
@@ -363,9 +363,9 @@ class OrderTree {
         String currentDateTime = dateFormat.format(new Date());
 
         String desktopPath = System.getProperty("user.home") + File.separator + "Desktop";
-        String fileName = "solutions.txt";
+        String fileName = "solutions2.txt";
         String filePath = desktopPath + File.separator + fileName;
-        String fileName2 = "checked.txt";
+        String fileName2 = "checked2.txt";
         String filePath2 = desktopPath + File.separator + fileName2;
         Map<Integer, List<Integer>> existingSolutions = loadExistingSolutionsFromFile(filePath);
         Map<Integer, List<Integer>> existingChecked = loadExistingCheckedFromFile(filePath2);
@@ -375,7 +375,7 @@ class OrderTree {
         arrayVisualization.setVisible(true);
         writer = new PrintWriter(new FileWriter(filePath));
 
-        for (int i = 5; i < 1000; i++) {
+        for (int i = 100; i < 101; i++) {
             int targetFitness;
             int n = i;
             //System.out.println(n+1);
@@ -386,8 +386,9 @@ class OrderTree {
                 targetFitness = (int) Math.ceil(Math.sqrt(((k * (k + 1)) * ((2 * k) + 1)) / 6));
             }
             //if(n==16){targetFitness++;}
-            targetFitness=(int)Math.floor((targetFitness*1.019));
+            //targetFitness=(int)Math.floor((targetFitness*1.019));
             System.out.println(targetFitness);
+
             //targetFitness=99999999;
             //targetFitness++;
             System.out.println(n);

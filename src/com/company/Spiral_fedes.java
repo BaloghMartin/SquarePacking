@@ -124,11 +124,12 @@ public class Spiral_fedes {
         int meretHelp = guideSequence.size();
         int hivnum = 0;
         int optV2 = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
+        //System.out.println(guideSequence.toString());
         int[][] solution;
 
         while (true) {
             solution = new int[optV2 - hivnum][optV2 - hivnum];
-            System.out.println(solution.length);
+            //System.out.println(solution.length);
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);
 
@@ -165,6 +166,7 @@ public class Spiral_fedes {
 
             boolean full = ellenorzo(solution);
             if (full==true) {
+                System.out.println(solution.length);
                 return solution;
             } else {
                 currentGuideIndex = 0;
@@ -175,14 +177,18 @@ public class Spiral_fedes {
 
     private static boolean ellenorzo(int[][] solution) {
         //printSolution(solution);
+        int counter=0;
         for (int i = 0; i < solution.length; i++) {
             for (int j = 0; j < solution[i].length; j++) {
                 if (solution[i][j] == 0) {
-                    return false; // Found a zero, return false
+                    counter++; // Found a zero, return false
                 }
             }
         }
-        return true; // No zero found, return true
+        //System.out.println(counter);
+        if(counter==0){
+        return true;}
+        else {return false;}// No zero found, return true
     }
 
     public static int placeSquaresAndReturnSize(List<Integer> guideSequence, int N, int MAX) {
@@ -352,17 +358,20 @@ public class Spiral_fedes {
         return score;
     }
     public static void main(String[] args) {
-        java.util.List<Integer> guideSequence = new ArrayList<>();
-        for(int i=100;i>0;i--){
-            guideSequence.add(i);}
+        for(int n=10;n>0;n++) {
+            java.util.List<Integer> guideSequence = new ArrayList<>();
+            for (int i = n; i > 0; i--) {
+                guideSequence.add(i);
+            }
 
-        int[][] res = Spiral_fedes.placeSquaresAndReturnArray(guideSequence);
-        Visualizer arrayVisualization = new Visualizer(new int[0][0]);
-        arrayVisualization.setVisible(true);
-        arrayVisualization.updateVisualization(res);
-        arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
-        System.out.println("Result: " + res.toString());
-
+            int[][] res = Spiral_fedes.placeSquaresAndReturnArray(guideSequence);
+            Visualizer arrayVisualization = new Visualizer(new int[0][0]);
+            //arrayVisualization.setVisible(true);
+            arrayVisualization.updateVisualization(res);
+            arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/kep/array_visualization"+ n +".png");
+            int optim = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
+            System.out.println("opt: "+optim +" n: "+n+ " Result: " + res.length);
+        }
 
 
         while(true){}
