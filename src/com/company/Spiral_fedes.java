@@ -166,7 +166,7 @@ public class Spiral_fedes {
 
             boolean full = ellenorzo(solution);
             if (full==true) {
-                System.out.println(solution.length);
+                //System.out.println(solution.length);
                 return solution;
             } else {
                 currentGuideIndex = 0;

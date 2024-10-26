@@ -56,37 +56,44 @@ public class DeterminedBB {
 
             i++;
 
-
+            if(i==10){return;}
             if(i!=N){DETERMINE();}
 
         }
-        public static List<List<Integer>> generateDescendingLists(int[] numbers) {
-            List<List<Integer>> result = new ArrayList<>();
-            List<Integer> sortedList = new ArrayList<>();
+    public static List<List<Integer>> generateDescendingLists(int[] numbers) {
+        List<List<Integer>> result = new ArrayList<>();
+        List<Integer> sortedList = new ArrayList<>();
 
-            // Convert array to list and sort in descending order
-            for (int num : numbers) {
-                sortedList.add(num);
-            }
-            Collections.sort(sortedList, Collections.reverseOrder());
-
-            for (int i = 0; i < sortedList.size(); i++) {
-                List<Integer> list = new ArrayList<>();
-                list.add(sortedList.get(i));
-
-                // Add remaining elements in descending order, skipping the first element
-                for (int j = 0; j < sortedList.size(); j++) {
-                    if (j != i) {
-                        list.add(sortedList.get(j));
-                    }
-                }
-                result.add(list);
-            }
-            return result;
+        // Convert array to list and sort in descending order
+        for (int num : numbers) {
+            sortedList.add(num);
         }
+        Collections.sort(sortedList, Collections.reverseOrder());
+
+        // Generate sublists with the first two elements fixed
+        for (int i = 0; i < sortedList.size(); i++) {
+            for (int j = 0; j < sortedList.size(); j++) {
+                if (i != j) {
+                    List<Integer> list = new ArrayList<>();
+                    list.add(sortedList.get(i)); // First fixed element
+                    list.add(sortedList.get(j)); // Second fixed element
+
+                    // Add remaining elements in descending order, skipping the first two chosen elements
+                    for (int k = 0; k < sortedList.size(); k++) {
+                        if (k != i && k != j) {
+                            list.add(sortedList.get(k));
+                        }
+                    }
+                    result.add(list);
+                }
+            }
+        }
+        return result;
+    }
+
 
     public static void main(String[] args) {
-            for(int i=3; i<100; i++){
+            for(int i=3; i<101; i++){
         DeterminedBB determinedBB = new DeterminedBB(i);
                 System.out.println(determinedBB.Bestgene.toString()+" "+determinedBB.BestFittness.toString());
             }
