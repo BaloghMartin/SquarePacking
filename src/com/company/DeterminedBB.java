@@ -3,9 +3,12 @@ package com.company;
 import java.util.*;
 
 public class DeterminedBB {
+
+    Visualizer arrayVisualization = new Visualizer(new int[0][0]);
         private Map<Integer, List<Integer>> bestGenes;
         private Map<Integer, Integer> bestFitnessValues;
         private int N;
+        private int Counter=0;
     public DeterminedBB(int N) {
         this.N=N;
         LEFT = new ArrayList<>(); // Create a new ArrayList for LEFT
@@ -36,14 +39,25 @@ public class DeterminedBB {
             this.N = N;
             this.gene = gene;
             this.fitness = Spiral.placeSquaresAndReturnSize(gene, N, BestFittness);
-            if (fitness<BestFittness){BestFittness=fitness; Bestgene=gene;}
+            Counter++;
+            //System.out.println(Counter);
+            if (fitness<BestFittness){BestFittness=fitness; Bestgene=gene;System.out.println(fitness);
+                arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
+                arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
+
+
+
+            }
+
+            //arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
+            //arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
         }
         }
 
         public void DETERMINE(){
 
 
-            List<List<Integer>> arrays = generateDescendingLists( LEFT.stream().mapToInt(Integer::intValue).toArray());
+            List<List<Integer>> arrays = generateDescendingLists( LEFT.stream().mapToInt(Integer::intValue).toArray(),1);
             for (List<Integer> element : arrays) {
 
                 element.addAll(0, DONE);
@@ -55,12 +69,13 @@ public class DeterminedBB {
             LEFT.remove(Bestgene.get(i));
 
             i++;
-
-            if(i==10){return;}
+            System.out.println("branchinganboundin");
+            if(i>10){
+                return;}
             if(i!=N){DETERMINE();}
 
         }
-    public static List<List<Integer>> generateDescendingLists(int[] numbers) {
+    public static List<List<Integer>> generateDescendingLists(int[] numbers, int fixedCount) {
         List<List<Integer>> result = new ArrayList<>();
         List<Integer> sortedList = new ArrayList<>();
 
@@ -70,35 +85,42 @@ public class DeterminedBB {
         }
         Collections.sort(sortedList, Collections.reverseOrder());
 
-        // Generate sublists with the first two elements fixed
-        for (int i = 0; i < sortedList.size(); i++) {
-            for (int j = 0; j < sortedList.size(); j++) {
-                if (i != j) {
-                    List<Integer> list = new ArrayList<>();
-                    list.add(sortedList.get(i)); // First fixed element
-                    list.add(sortedList.get(j)); // Second fixed element
-
-                    // Add remaining elements in descending order, skipping the first two chosen elements
-                    for (int k = 0; k < sortedList.size(); k++) {
-                        if (k != i && k != j) {
-                            list.add(sortedList.get(k));
-                        }
-                    }
-                    result.add(list);
-                }
-            }
-        }
+        // Start recursive generation with fixedCount
+        generateCombinations(result, new ArrayList<>(), sortedList, fixedCount);
         return result;
+    }
+
+    private static void generateCombinations(List<List<Integer>> result, List<Integer> current, List<Integer> remaining, int fixedCount) {
+        if (current.size() == fixedCount) {
+            // Add the current fixed elements and remaining elements in descending order
+            List<Integer> fullList = new ArrayList<>(current);
+            fullList.addAll(remaining);
+            result.add(fullList);
+            return;
+        }
+
+        // Generate combinations by choosing each element in remaining as the next fixed element
+        for (int i = 0; i < remaining.size(); i++) {
+            List<Integer> newCurrent = new ArrayList<>(current);
+            newCurrent.add(remaining.get(i));
+
+            List<Integer> newRemaining = new ArrayList<>(remaining);
+            newRemaining.remove(i);
+
+            generateCombinations(result, newCurrent, newRemaining, fixedCount);
+        }
     }
 
 
     public static void main(String[] args) {
-            for(int i=3; i<101; i++){
-        DeterminedBB determinedBB = new DeterminedBB(i);
-                System.out.println(determinedBB.Bestgene.toString()+" "+determinedBB.BestFittness.toString());
-            }
+            for(int i=78; i<101; i++) {
+                DeterminedBB determinedBB = new DeterminedBB(i);
 
-    }
+                System.out.println(determinedBB.Bestgene.toString() + " " + determinedBB.BestFittness.toString());
+                //arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
+
+            }
+        }
 }
 
 
