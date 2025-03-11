@@ -67,7 +67,7 @@ public class DeterminedBB {
             }
             DONE.add(Bestgene.get(i));
             LEFT.remove(Bestgene.get(i));
-
+            //helloooo
             i++;
             System.out.println("branchinganboundin");
             if(i>10){
