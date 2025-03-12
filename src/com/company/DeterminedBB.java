@@ -1,10 +1,11 @@
 package com.company;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class DeterminedBB {
 
-    Visualizer arrayVisualization = new Visualizer(new int[0][0]);
+    static Visualizer arrayVisualization = new Visualizer(new int[0][0]);
         private Map<Integer, List<Integer>> bestGenes;
         private Map<Integer, Integer> bestFitnessValues;
         private int N;
@@ -21,7 +22,7 @@ public class DeterminedBB {
 
     }
 
-    private List<Integer> LEFT;
+        private List<Integer> LEFT;
         private List<Integer> DONE;
         int i=0;
         public Integer getBestFittness() {
@@ -30,47 +31,75 @@ public class DeterminedBB {
 
         private Integer BestFittness=Integer.MAX_VALUE;
         List<Integer> Bestgene;
-        class Gene {
-        List<Integer> gene;
-        int N;
-        int fitness;
+    class Gene {
 
-        public Gene(List<Integer> gene, int N) {
+        private List<Integer> gene; // The list of integers representing the gene.
+        private int N;              // Gene size.
+        private int fitness;        // Fitness value.
+        private static int bestFitness; // Shared "BestFittness".
+
+        // Constructor without fitness calculation.
+        public Gene(List<Integer> gene, int N, int BestFittness) {
+            this.gene = new ArrayList<>(gene); // Create a defensive copy.
             this.N = N;
-            this.gene = gene;
-            this.fitness = Spiral.placeSquaresAndReturnSize(gene, N, BestFittness);
-            Counter++;
-            //System.out.println(Counter);
-            if (fitness<BestFittness){BestFittness=fitness; Bestgene=gene;System.out.println(fitness);
-                arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
-                arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
-
-
-
-            }
-
-            //arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
-            //arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
-        }
+            Gene.bestFitness = BestFittness; // Assume a static/shared best fitness value.
+            this.fitness = -1; // Default fitness value indicating "not calculated".
         }
 
-        public void DETERMINE(){
+        // Method to calculate fitness (can be parallelized).
+        public void calculateFitness() {
+            this.fitness = Spiral.placeSquaresAndReturnSize(gene, N, bestFitness);
+        }
 
-
-            List<List<Integer>> arrays = generateDescendingLists( LEFT.stream().mapToInt(Integer::intValue).toArray(),1);
-            for (List<Integer> element : arrays) {
-
-                element.addAll(0, DONE);
-                //System.out.println(element.toString());
-                //System.out.println();
-                new Gene(element, element.size());
+        // Getter for fitness.
+        public int getFitness() {
+            if (fitness == -1) {
+                throw new IllegalStateException("Fitness not calculated yet!");
             }
+            return fitness;
+        }
+    }
+
+
+
+    public void DETERMINE(){
+
+
+
+
+            List<List<Integer>> arrays = generateDescendingLists( LEFT.stream().mapToInt(Integer::intValue).toArray(),2);
+            // Create a thread-safe list for storing Gene objects
+            List<Gene> geneList = new CopyOnWriteArrayList<>();
+
+            // Part 1: Generate Gene objects sequentially
+            arrays.forEach(element -> {
+                element.addAll(0, DONE); // Add elements from DONE
+                Gene gene = new Gene(element, element.size(), BestFittness); // Create Gene without calculating fitness.
+
+                geneList.add(gene); // Add to thread-safe list
+            });
+
+            // Part 2: Parallelize fitness calculation
+            geneList.parallelStream().forEach(Gene::calculateFitness);
+
+            for (Gene gene : geneList) {
+                int fitness = gene.getFitness(); // Assuming Gene has a getFitness() method
+                if (fitness < BestFittness) {
+                    BestFittness = fitness;
+                    Bestgene = gene.gene;
+                    System.out.println(fitness);
+                    arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
+                    arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
+                }
+            }
+
+
             DONE.add(Bestgene.get(i));
             LEFT.remove(Bestgene.get(i));
             //helloooo
             i++;
-            System.out.println("branchinganboundin");
-            if(i>10){
+            //System.out.println("branchinganboundin");
+            if(i>20){
                 return;}
             if(i!=N){DETERMINE();}
 
@@ -113,11 +142,11 @@ public class DeterminedBB {
 
 
     public static void main(String[] args) {
-            for(int i=78; i<101; i++) {
+            for(int i=15; i<100; i++) {
                 DeterminedBB determinedBB = new DeterminedBB(i);
 
                 System.out.println(determinedBB.Bestgene.toString() + " " + determinedBB.BestFittness.toString());
-                //arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
+                arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
 
             }
         }
