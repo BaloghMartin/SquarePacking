@@ -18,6 +18,13 @@ public class DeterminedBB {
             //System.out.println(i);
             this.LEFT.add(N - i);
         }
+        //ez ide azért kell hogy legyen egy baseline, hogy első körbe ne számolja ki mindennek az értékét
+        Gene elso = new Gene(LEFT, N, Integer.MAX_VALUE);
+        elso.calculateFitness();
+        BestFittness= elso.getFitness();
+
+        Bestgene=elso.gene;
+        //System.out.println(Bestgene.toString()+" "+BestFittness.toString());
         DETERMINE();
 
     }
@@ -30,7 +37,7 @@ public class DeterminedBB {
         }
 
         private Integer BestFittness=Integer.MAX_VALUE;
-        List<Integer> Bestgene;
+        static List<Integer> Bestgene;
     class Gene {
 
         private List<Integer> gene; // The list of integers representing the gene.
@@ -67,13 +74,15 @@ public class DeterminedBB {
 
 
 
-            List<List<Integer>> arrays = generateDescendingLists( LEFT.stream().mapToInt(Integer::intValue).toArray(),2);
+            List<List<Integer>> arrays = generateDescendingLists( LEFT.stream().mapToInt(Integer::intValue).toArray(),3);
             // Create a thread-safe list for storing Gene objects
             List<Gene> geneList = new CopyOnWriteArrayList<>();
+
 
             // Part 1: Generate Gene objects sequentially
             arrays.forEach(element -> {
                 element.addAll(0, DONE); // Add elements from DONE
+                //System.out.println(element.toString());
                 Gene gene = new Gene(element, element.size(), BestFittness); // Create Gene without calculating fitness.
 
                 geneList.add(gene); // Add to thread-safe list
@@ -83,13 +92,14 @@ public class DeterminedBB {
             geneList.parallelStream().forEach(Gene::calculateFitness);
 
             for (Gene gene : geneList) {
+                //System.out.println(gene.gene.toString());
                 int fitness = gene.getFitness(); // Assuming Gene has a getFitness() method
                 if (fitness < BestFittness) {
                     BestFittness = fitness;
                     Bestgene = gene.gene;
                     System.out.println(fitness);
-                    arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
-                    arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
+                    //arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
+                    //arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
                 }
             }
 
@@ -99,8 +109,8 @@ public class DeterminedBB {
             //helloooo
             i++;
             //System.out.println("branchinganboundin");
-            if(i>20){
-                return;}
+            //ITT KELL ÁTÍRNI HOGY MENNYI ELEM MÉLYRE MENJEN
+            //if(i>10){return;}
             if(i!=N){DETERMINE();}
 
         }
@@ -142,10 +152,11 @@ public class DeterminedBB {
 
 
     public static void main(String[] args) {
-            for(int i=15; i<100; i++) {
+            for(int i=16; i<101; i++) {
                 DeterminedBB determinedBB = new DeterminedBB(i);
 
-                System.out.println(determinedBB.Bestgene.toString() + " " + determinedBB.BestFittness.toString());
+                System.out.println(determinedBB.Bestgene.size() + " "  + determinedBB.BestFittness.toString() + " " + determinedBB.Bestgene.toString() );
+                arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
                 arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
 
             }
