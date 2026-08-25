@@ -6,7 +6,7 @@ import squarepacking.ui.*;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class DeterminedBB {
+public class DeterminedBBOptimized {
 
     static Visualizer arrayVisualization = new Visualizer(new int[0][0]);
     private Map<Integer, List<Integer>> bestGenes;
@@ -16,11 +16,11 @@ public class DeterminedBB {
     private int branchWidth;
     private int maxDepth;
 
-    public DeterminedBB(int N) {
+    public DeterminedBBOptimized(int N) {
         this(N, (int) Math.ceil(200.0 / (40 + N)), 500 / N);
     }
 
-    public DeterminedBB(int N, int branchWidth, int maxDepth) {
+    public DeterminedBBOptimized(int N, int branchWidth, int maxDepth) {
         this.N = N;
         this.branchWidth = branchWidth;
         this.maxDepth = maxDepth;
@@ -70,7 +70,7 @@ public class DeterminedBB {
 
         // Method to calculate fitness (can be parallelized).
         public void calculateFitness() {
-            this.fitness = Spiral.placeSquaresAndReturnSize(gene, N, bestFitness);
+            this.fitness = SpiralOptimized.placeSquaresAndReturnSize(gene, N, bestFitness);
         }
 
         // Getter for fitness.
@@ -111,7 +111,7 @@ public class DeterminedBB {
                 BestFittness = fitness;
                 Bestgene = gene.gene;
                 System.out.println(fitness);
-                arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
+                arrayVisualization.updateVisualization(SpiralOptimized.placeSquaresAndReturnArray(Bestgene));
                 arrayVisualization
                         .saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
             }
@@ -173,10 +173,11 @@ public class DeterminedBB {
 
     public static void main(String[] args) {
         for (int i = 10; i < 25; i++) {
-            DeterminedBB determinedBB = new DeterminedBB(i);
+            DeterminedBBOptimized determinedBB = new DeterminedBBOptimized(i);
+
             System.out.println(determinedBB.Bestgene.size() + " " + determinedBB.BestFittness.toString() + " "
                     + determinedBB.Bestgene.toString());
-            arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
+            arrayVisualization.updateVisualization(SpiralOptimized.placeSquaresAndReturnArray(Bestgene));
             arrayVisualization
                     .saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
 
