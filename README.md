@@ -11,16 +11,16 @@ A Java-based algorithmic project designed to solve complex 2D square packing opt
 
 ## Project Structure
 
-- `src/com/company/controller/`: The "brains" of the operation. Contains the multi-threaded Branch and Bound algorithms.
-- `src/com/company/algorithm/`: The geometric placement logic. Converts a 1D sequence of squares into a 2D optimized spiral arrangement.
-- `src/com/company/ui/`: Contains the visualizer components.
+- `src/squarepacking/controller/`: The "brains" of the operation. Contains the multi-threaded Branch and Bound algorithms.
+- `src/squarepacking/algorithm/`: The geometric placement logic. Converts a 1D sequence of squares into a 2D optimized spiral arrangement.
+- `src/squarepacking/ui/`: Contains the visualizer components.
 - `archive/`: A graveyard of legacy scripts, previous algorithm iterations, and deprecated models for historical reference.
 
 ## Getting Started
 
 1. Clone the repository.
 2. Open the project in your favorite Java IDE (IntelliJ IDEA, Eclipse, VS Code).
-3. Open `src/com/company/Main.java`.
+3. Open `src/squarepacking/Main.java`.
 4. Uncomment the specific algorithm you wish to run.
 5. Click **Run**! 
 
