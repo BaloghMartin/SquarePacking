@@ -1,7 +1,7 @@
-package com.company;
+package squarepacking;
 
-import com.company.controller.DeterminedBB;
-import com.company.controller.DeterminedBranchAndBoundFedes;
+import squarepacking.controller.DeterminedBB;
+import squarepacking.controller.DeterminedBranchAndBoundFedes;
 
 public class Main {
     public static void main(String[] args) {

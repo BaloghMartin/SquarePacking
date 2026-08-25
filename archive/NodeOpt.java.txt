@@ -1,10 +1,10 @@
-package com.company.model;
+package squarepacking.model;
 
-import com.company.model.*;
-import com.company.algorithm.*;
-import com.company.ui.*;
-import com.company.exception.*;
-/*package com.company;
+import squarepacking.model.*;
+import squarepacking.algorithm.*;
+import squarepacking.ui.*;
+import squarepacking.exception.*;
+/*package squarepacking;
 
 import java.util.ArrayList;
 import java.util.List;

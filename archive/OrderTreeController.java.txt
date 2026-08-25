@@ -1,10 +1,10 @@
-package com.company.ui;
+package squarepacking.ui;
 
 
-import com.company.algorithm.*;
-import com.company.ui.*;
-import com.company.exception.*;
-/*import com.company.OrderTree;
+import squarepacking.algorithm.*;
+import squarepacking.ui.*;
+import squarepacking.exception.*;
+/*import squarepacking.OrderTree;
 
 import java.io.*;
 import java.util.ArrayList;

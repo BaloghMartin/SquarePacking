@@ -1,15 +1,13 @@
-package com.company.algorithm;
+package squarepacking.algorithm;
 
 
-import com.company.algorithm.*;
-import com.company.ui.*;
+import squarepacking.algorithm.*;
+import squarepacking.ui.*;
 
 import java.util.ArrayList;
-import java.util.List;
+        import java.util.List;
 
-import java.util.Collections;
-
-public class Spiral_fedes_buffer {
+public class Spiral_fedes {
     public static double placeSquares(List<Integer> guideSequence) {
         int currentGuideIndex = 0;
         int meretHelp = guideSequence.size();
@@ -126,22 +124,19 @@ public class Spiral_fedes_buffer {
 
     public static int[][] placeSquaresAndReturnArray(List<Integer> guideSequence) {
         int currentGuideIndex = 0;
-
         int meretHelp = guideSequence.size();
         int hivnum = 0;
         int optV2 = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
+        //System.out.println(guideSequence.toString());
         int[][] solution;
 
-
         while (true) {
-            List<Integer> leftOut = new ArrayList<>();
             solution = new int[optV2 - hivnum][optV2 - hivnum];
-            System.out.println(solution.length);
+            //System.out.println(solution.length);
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);
-                //megkeresni az első helyet ahová hibátlanul befér
+
                 int[] position = findFirstZeroPosition(solution, meretHelp);
-                //ha van ilyen hely
                 if (position != null) {
                     //System.out.println(meretHelp);
                     solution = placer(solution, meretHelp, position[0], position[1]);
@@ -152,66 +147,51 @@ public class Spiral_fedes_buffer {
                         break;
                         //return solution;
                     }
-                    //ha nincs ilyen:
                 } else {
+                    position = findBestPosition(solution, meretHelp);
+                    if (position != null) {
+                        solution = placer(solution, meretHelp, position[0], position[1]);
+                        currentGuideIndex++;
 
-                    leftOut.add(meretHelp);
-                    currentGuideIndex++;
-                    if (currentGuideIndex >= guideSequence.size()) {
-                        //printSolution(solution);
-                        break;
-                        //return solution;
-                    }
-                }
-            }
-            int leftOutGuideIndex = 0;
-
-
-            if (!leftOut.isEmpty()) {
-                Collections.reverse(leftOut);
-                while (leftOutGuideIndex <= leftOut.size()) {
-                    System.out.println(leftOut.get(leftOutGuideIndex).toString());
-                    meretHelp = leftOut.get(leftOutGuideIndex);
-                    int position2[] = findBestPosition(solution, meretHelp);
-                    if (position2 != null) {
-                        solution = placer(solution, meretHelp, position2[0], position2[1]);
-                        leftOutGuideIndex++;
-                        //System.out.println("index" + leftOutGuideIndex);
-                        //System.out.println("size" + leftOut.size());
-                        if (leftOutGuideIndex >= leftOut.size()) {
-                            //System.out.println("ITT");
+                        if (currentGuideIndex >= guideSequence.size()) {
+                            //printSolution(solution);
                             break;
+                            //return solution;
+                        } else {
+                            //System.out.println(meretHelp);
+                            //solution = placer(solution, meretHelp, 0, 0);
                         }
+
+                        //break;
                     }
                 }
-            } else {
-                break;
             }
 
-            //System.out.println("ITT");
             boolean full = ellenorzo(solution);
-            if (full == true) {
+            if (full==true) {
+                //System.out.println(solution.length);
                 return solution;
             } else {
                 currentGuideIndex = 0;
                 hivnum++;
             }
-
         }
-        return solution;
     }
-
 
     private static boolean ellenorzo(int[][] solution) {
         //printSolution(solution);
+        int counter=0;
         for (int i = 0; i < solution.length; i++) {
             for (int j = 0; j < solution[i].length; j++) {
                 if (solution[i][j] == 0) {
-                    return false; // Found a zero, return false
+                    counter++; // Found a zero, return false
                 }
             }
         }
-        return true; // No zero found, return true
+        //System.out.println(counter);
+        if(counter==0){
+        return true;}
+        else {return false;}// No zero found, return true
     }
 
     public static int placeSquaresAndReturnSize(List<Integer> guideSequence, int N, int MAX) {
@@ -231,7 +211,7 @@ public class Spiral_fedes_buffer {
 
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);
-                //ezt kell majd átvinni
+                //ezt kell majd Ä‚Ë‡tvinni
                 int[] position = findFirstZeroPosition(solution, meretHelp);
                 if (position != null) {
                     //meg ezt
@@ -253,7 +233,7 @@ public class Spiral_fedes_buffer {
     }
 
 
-    public static double placeSquaresAndReturnFitness(List<Integer> guideSequence) {
+    public static double placeSquaresAndReturnFitness(List<Integer>guideSequence) {
         double fitness = 1;
         int currentGuideIndex = 0;
         int meretHelp = guideSequence.size();
@@ -305,7 +285,62 @@ public class Spiral_fedes_buffer {
 
         return ratio;
     }
+    public static int[][] placeSquaresAndReturnArray(List<Integer> guideSequence, int MAX) {
+        int currentGuideIndex = 0;
+        int meretHelp = guideSequence.size();
+        int hivnum = 0;
+        int optV2 = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
+        //System.out.println(guideSequence.toString());
+        int[][] solution;
 
+        while (true) {
+            solution = new int[optV2 - hivnum][optV2 - hivnum];
+            //System.out.println(solution.length);
+            while (currentGuideIndex <= guideSequence.size()) {
+                meretHelp = guideSequence.get(currentGuideIndex);
+
+                int[] position = findFirstZeroPosition(solution, meretHelp);
+                if (position != null) {
+                    //System.out.println(meretHelp);
+                    solution = placer(solution, meretHelp, position[0], position[1]);
+                    currentGuideIndex++;
+
+                    if (currentGuideIndex >= guideSequence.size()) {
+                        //printSolution(solution);
+                        break;
+                        //return solution;
+                    }
+                } else {
+                    position = findBestPosition(solution, meretHelp);
+                    if (position != null) {
+                        solution = placer(solution, meretHelp, position[0], position[1]);
+                        currentGuideIndex++;
+
+                        if (currentGuideIndex >= guideSequence.size()) {
+                            //printSolution(solution);
+                            break;
+                            //return solution;
+                        } else {
+                            //System.out.println(meretHelp);
+                            //solution = placer(solution, meretHelp, 0, 0);
+                        }
+
+                        //break;
+                    }
+                }
+            }
+
+            boolean full = ellenorzo(solution);
+            if (full==true) {
+                //System.out.println(solution.length);
+                return solution;
+            } else {
+                currentGuideIndex = 0;
+                hivnum++;
+                if(optV2-hivnum<MAX){return solution;}
+            }
+        }
+    }
 
     private static int[] findBestPosition(int[][] matrix, int integer) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
@@ -368,7 +403,7 @@ public class Spiral_fedes_buffer {
         int cols = matrix[0].length;
         int score=0;
         if (row + integer > rows || col + integer > cols) {
-            //System.out.println("Szerintem ide nem kéne belefutnia");
+            //System.out.println("Szeritnem ide nem kÄ‚Â©ne belefutnia");
             return 0;
         }
         for (int i = row; i < row + integer; i++) {
@@ -381,20 +416,23 @@ public class Spiral_fedes_buffer {
         return score;
     }
     public static void main(String[] args) {
-        List<Integer> guideSequence = new ArrayList<>();
-        for(int i=100;i>0;i--){
-            guideSequence.add(i);}
+        for(int n=10;n<11;n++) {
+            java.util.List<Integer> guideSequence = new ArrayList<>();
+            for (int i = n; i > 0; i--) {
+                guideSequence.add(i);
+            }
 
-        int[][] res = Spiral_fedes_buffer.placeSquaresAndReturnArray(guideSequence);
-        Visualizer arrayVisualization = new Visualizer(new int[0][0]);
-        arrayVisualization.setVisible(true);
-        arrayVisualization.updateVisualization(res);
-        arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
-        System.out.println("Result: " + res.toString());
+            int[][] res = Spiral_fedes.placeSquaresAndReturnArray(guideSequence);
+            Visualizer arrayVisualization = new Visualizer(new int[0][0]);
+            //arrayVisualization.setVisible(true);
+            arrayVisualization.updateVisualization(res);
+            arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
+            int optim = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
+            System.out.println("opt: "+optim +" n: "+n+ " Result: " + res.length);
+        }
 
 
-
-        while(true){}
+        //while(true){}
         //System.out.println("Result: " + res.toString());
         //printSolution(res);
         //System.out.println(res.length);

@@ -1,8 +1,8 @@
-package com.company.ui;
+package squarepacking.ui;
 
 
-import com.company.algorithm.*;
-import com.company.ui.*;
+import squarepacking.algorithm.*;
+import squarepacking.ui.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;

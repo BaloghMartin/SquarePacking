@@ -1,13 +1,13 @@
-package com.company.controller;
+package squarepacking.controller;
 
 
-import com.company.algorithm.*;
-import com.company.ui.*;
+import squarepacking.algorithm.*;
+import squarepacking.ui.*;
 
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class DeterminedBranchAndBoundFedes {
+public class DeterminedBB {
 
     static Visualizer arrayVisualization = new Visualizer(new int[0][0]);
     private Map<Integer, List<Integer>> bestGenes;
@@ -17,11 +17,11 @@ public class DeterminedBranchAndBoundFedes {
     private int branchWidth;
     private int maxDepth;
 
-    public DeterminedBranchAndBoundFedes(int N) {
-        this(N, (int) Math.ceil(200.0 / (40 + N)), 0);
+    public DeterminedBB(int N) {
+        this(N, (int) Math.ceil(200.0 / (40 + N)), 500 / N);
     }
 
-    public DeterminedBranchAndBoundFedes(int N, int branchWidth, int maxDepth) {
+    public DeterminedBB(int N, int branchWidth, int maxDepth) {
         this.N = N;
         this.branchWidth = branchWidth;
         this.maxDepth = maxDepth;
@@ -33,7 +33,7 @@ public class DeterminedBranchAndBoundFedes {
         }
         // ez ide azért kell hogy legyen egy baseline, hogy első körbe ne számolja ki
         // mindennek az értékét
-        Gene elso = new Gene(LEFT, N, Integer.MIN_VALUE);
+        Gene elso = new Gene(LEFT, N, Integer.MAX_VALUE);
         elso.calculateFitness();
         BestFittness = elso.getFitness();
 
@@ -51,7 +51,7 @@ public class DeterminedBranchAndBoundFedes {
         return BestFittness;
     }
 
-    private Integer BestFittness = Integer.MIN_VALUE;
+    private Integer BestFittness = Integer.MAX_VALUE;
     static List<Integer> Bestgene;
 
     class Gene {
@@ -71,8 +71,7 @@ public class DeterminedBranchAndBoundFedes {
 
         // Method to calculate fitness (can be parallelized).
         public void calculateFitness() {
-            this.fitness = Spiral_fedes.placeSquaresAndReturnArray(gene, bestFitness).length;
-            // System.out.println(this.fitness);
+            this.fitness = Spiral.placeSquaresAndReturnSize(gene, N, bestFitness);
         }
 
         // Getter for fitness.
@@ -83,6 +82,8 @@ public class DeterminedBranchAndBoundFedes {
             return fitness;
         }
     }
+
+    boolean width = true;
 
     public void DETERMINE() {
         int roundedResult = this.branchWidth;
@@ -97,7 +98,7 @@ public class DeterminedBranchAndBoundFedes {
             element.addAll(0, DONE); // Add elements from DONE
             // System.out.println(element.toString());
             Gene gene = new Gene(element, element.size(), BestFittness); // Create Gene without calculating fitness.
-            // System.out.println(gene.gene);
+
             geneList.add(gene); // Add to thread-safe list
         });
 
@@ -105,15 +106,13 @@ public class DeterminedBranchAndBoundFedes {
         geneList.parallelStream().forEach(Gene::calculateFitness);
 
         for (Gene gene : geneList) {
-            // System.out.println(gene.gene.toString() + " " + gene.fitness);
+            // System.out.println(gene.gene.toString());
             int fitness = gene.getFitness(); // Assuming Gene has a getFitness() method
-            if (fitness > BestFittness) {
-                // System.out.println( gene.gene.toString() + " "+BestFittness+ "-rol " +
-                // fitness+"-ra");
+            if (fitness < BestFittness) {
                 BestFittness = fitness;
                 Bestgene = gene.gene;
-                // System.out.println(fitness);
-                arrayVisualization.updateVisualization(Spiral_fedes.placeSquaresAndReturnArray(Bestgene, BestFittness));
+                System.out.println(fitness);
+                arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
                 arrayVisualization
                         .saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
             }
@@ -125,10 +124,10 @@ public class DeterminedBranchAndBoundFedes {
         i++;
         // System.out.println("branchinganboundin");
         // ITT KELL ÁTÍRNI HOGY MENNYI ELEM MÉLYRE MENJEN
-        // if(i>500/N){return;}
         if (i > this.maxDepth) {
             return;
         }
+        // if(i>500/N){width=false;}
         if (i != N) {
             DETERMINE();
         }
@@ -175,11 +174,11 @@ public class DeterminedBranchAndBoundFedes {
 
     public static void main(String[] args) {
         for (int i = 10; i < 20; i++) {
-            DeterminedBranchAndBoundFedes determinedBB = new DeterminedBranchAndBoundFedes(i);
+            DeterminedBB determinedBB = new DeterminedBB(i);
 
             System.out.println(determinedBB.Bestgene.size() + " " + determinedBB.BestFittness.toString() + " "
                     + determinedBB.Bestgene.toString());
-            arrayVisualization.updateVisualization(Spiral_fedes.placeSquaresAndReturnArray(Bestgene));
+            arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
             arrayVisualization
                     .saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
 

@@ -1,10 +1,10 @@
-package com.company.controller;
+package squarepacking.controller;
 
-import com.company.model.*;
-import com.company.algorithm.*;
-import com.company.controller.*;
-import com.company.ui.*;
-import com.company.exception.*;
+import squarepacking.model.*;
+import squarepacking.algorithm.*;
+import squarepacking.controller.*;
+import squarepacking.ui.*;
+import squarepacking.exception.*;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 

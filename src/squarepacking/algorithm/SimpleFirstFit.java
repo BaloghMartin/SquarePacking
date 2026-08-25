@@ -1,12 +1,12 @@
-package com.company.algorithm;
+package squarepacking.algorithm;
 
 
-import com.company.algorithm.*;
-import com.company.ui.*;
+import squarepacking.algorithm.*;
+import squarepacking.ui.*;
 
 import java.util.List;
 
-public class Spiral {
+public class SimpleFirstFit {
     public static double placeSquares(List<Integer> guideSequence) {
         int currentGuideIndex = 0;
         int meretHelp = guideSequence.size();
@@ -167,7 +167,7 @@ public class Spiral {
 
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);
-                //ezt kell majd Ä‚Ë‡tvinni
+                //ezt kell majd átvinni
                 int[] position = findFirstZeroPosition(solution, meretHelp);
                 if (position != null) {
                     //meg ezt

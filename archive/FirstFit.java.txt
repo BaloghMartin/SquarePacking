@@ -1,9 +1,9 @@
-package com.company.algorithm;
+package squarepacking.algorithm;
 
-import com.company.model.*;
-import com.company.algorithm.*;
-import com.company.ui.*;
-import com.company.exception.*;
+import squarepacking.model.*;
+import squarepacking.algorithm.*;
+import squarepacking.ui.*;
+import squarepacking.exception.*;
 import java.util.List;
 
 public class FirstFit {

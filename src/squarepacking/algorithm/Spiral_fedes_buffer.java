@@ -1,12 +1,15 @@
-package com.company.algorithm;
+package squarepacking.algorithm;
 
 
-import com.company.algorithm.*;
-import com.company.ui.*;
+import squarepacking.algorithm.*;
+import squarepacking.ui.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class SimpleFirstFit {
+import java.util.Collections;
+
+public class Spiral_fedes_buffer {
     public static double placeSquares(List<Integer> guideSequence) {
         int currentGuideIndex = 0;
         int meretHelp = guideSequence.size();
@@ -28,6 +31,7 @@ public class SimpleFirstFit {
 
                     if (currentGuideIndex >= guideSequence.size()) {
                         //printSolution(solution);
+
                         return (double) solution.length / optV2;
                     }
                 } else {
@@ -122,36 +126,95 @@ public class SimpleFirstFit {
 
     public static int[][] placeSquaresAndReturnArray(List<Integer> guideSequence) {
         int currentGuideIndex = 0;
+
         int meretHelp = guideSequence.size();
-        int hivnum = 1;
+        int hivnum = 0;
         int optV2 = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
         int[][] solution;
 
-        while (true) {
-            solution = new int[optV2 + hivnum - 1][optV2 + hivnum - 1];
 
+        while (true) {
+            List<Integer> leftOut = new ArrayList<>();
+            solution = new int[optV2 - hivnum][optV2 - hivnum];
+            System.out.println(solution.length);
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);
+                //megkeresni az első helyet ahová hibátlanul befér
                 int[] position = findFirstZeroPosition(solution, meretHelp);
+                //ha van ilyen hely
                 if (position != null) {
+                    //System.out.println(meretHelp);
                     solution = placer(solution, meretHelp, position[0], position[1]);
                     currentGuideIndex++;
 
                     if (currentGuideIndex >= guideSequence.size()) {
                         //printSolution(solution);
-                        return solution;
+                        break;
+                        //return solution;
                     }
+                    //ha nincs ilyen:
                 } else {
-                    break;
+
+                    leftOut.add(meretHelp);
+                    currentGuideIndex++;
+                    if (currentGuideIndex >= guideSequence.size()) {
+                        //printSolution(solution);
+                        break;
+                        //return solution;
+                    }
                 }
             }
+            int leftOutGuideIndex = 0;
 
-            currentGuideIndex = 0;
-            hivnum++;
+
+            if (!leftOut.isEmpty()) {
+                Collections.reverse(leftOut);
+                while (leftOutGuideIndex <= leftOut.size()) {
+                    System.out.println(leftOut.get(leftOutGuideIndex).toString());
+                    meretHelp = leftOut.get(leftOutGuideIndex);
+                    int position2[] = findBestPosition(solution, meretHelp);
+                    if (position2 != null) {
+                        solution = placer(solution, meretHelp, position2[0], position2[1]);
+                        leftOutGuideIndex++;
+                        //System.out.println("index" + leftOutGuideIndex);
+                        //System.out.println("size" + leftOut.size());
+                        if (leftOutGuideIndex >= leftOut.size()) {
+                            //System.out.println("ITT");
+                            break;
+                        }
+                    }
+                }
+            } else {
+                break;
+            }
+
+            //System.out.println("ITT");
+            boolean full = ellenorzo(solution);
+            if (full == true) {
+                return solution;
+            } else {
+                currentGuideIndex = 0;
+                hivnum++;
+            }
+
         }
+        return solution;
     }
 
-    public static int placeSquaresAndReturnSize(List<Integer> guideSequence,int N, int MAX) {
+
+    private static boolean ellenorzo(int[][] solution) {
+        //printSolution(solution);
+        for (int i = 0; i < solution.length; i++) {
+            for (int j = 0; j < solution[i].length; j++) {
+                if (solution[i][j] == 0) {
+                    return false; // Found a zero, return false
+                }
+            }
+        }
+        return true; // No zero found, return true
+    }
+
+    public static int placeSquaresAndReturnSize(List<Integer> guideSequence, int N, int MAX) {
         int currentGuideIndex = 0;
         int meretHelp = N;
         int hivnum = 1;
@@ -161,9 +224,10 @@ public class SimpleFirstFit {
         while (true) {
             solution = new int[optV2 + hivnum - 1][optV2 + hivnum - 1];
 
-            if((optV2 + hivnum - 1)>=MAX){
+            if ((optV2 + hivnum - 1) >= MAX) {
                 //
-                return solution.length+1;}
+                return solution.length + 1;
+            }
 
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);
@@ -190,7 +254,7 @@ public class SimpleFirstFit {
 
 
     public static double placeSquaresAndReturnFitness(List<Integer> guideSequence) {
-        double fitness=1;
+        double fitness = 1;
         int currentGuideIndex = 0;
         int meretHelp = guideSequence.size();
         int hivnum = 1;
@@ -213,7 +277,7 @@ public class SimpleFirstFit {
                         return fitness;
                     }
                 } else {
-                    fitness=fitness*zeroRatio(solution);
+                    fitness = fitness * zeroRatio(solution);
                     break;
                 }
             }
@@ -237,9 +301,104 @@ public class SimpleFirstFit {
         }
 
         // Calculate the zero ratio (number of zeros / total number of cells)
-        double ratio = (double)   totalCells/zeroCount;
+        double ratio = (double) totalCells / zeroCount;
 
         return ratio;
     }
-}
 
+
+    private static int[] findBestPosition(int[][] matrix, int integer) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return null;
+        }
+        int top = 0;
+        int bottom = matrix.length - integer;
+        int left = 0;
+        int right = matrix[0].length - integer;
+        int[] place ={0,0};
+        int score=0;
+
+        while (top <= bottom && left <= right) {
+            for (int i = left; i <= right; i++) {
+
+                if(countSquareSubarray(matrix, top, i, integer)>score){
+                    score=countSquareSubarray(matrix,top,i,integer);
+                    place[0]=top;
+                    place[1]=i;
+                }
+            }
+            top++;
+
+            for (int i = top; i <= bottom; i++) {
+                if(countSquareSubarray(matrix, i, right, integer)>score){
+                    score=countSquareSubarray(matrix,i,right,integer);
+                    place[0]=i;
+                    place[1]=right;
+                }
+            }
+            right--;
+
+            if (top <= bottom) {
+                for (int i = right; i >= left; i--) {
+                    if(countSquareSubarray(matrix, bottom, i, integer)>score){
+                        score=countSquareSubarray(matrix,bottom,i,integer);
+                        place[0]=bottom;
+                        place[1]=i;
+                    }
+                }
+                bottom--;
+            }
+
+            if (left <= right) {
+                for (int i = bottom; i >= top; i--) {
+                    if(countSquareSubarray(matrix, i, left, integer)>score){
+                        score=countSquareSubarray(matrix,i,left,integer);
+                        place[0]=i;
+                        place[1]=left;
+                    }
+                }
+                left++;
+            }
+        }
+
+        return place;
+    }
+    private static int countSquareSubarray(int[][] matrix, int row, int col, int integer) {
+        int rows = matrix.length;
+        int cols = matrix[0].length;
+        int score=0;
+        if (row + integer > rows || col + integer > cols) {
+            //System.out.println("Szerintem ide nem kéne belefutnia");
+            return 0;
+        }
+        for (int i = row; i < row + integer; i++) {
+            for (int j = col; j < col + integer; j++) {
+                if (matrix[i][j] == 0) {
+                    score++;
+                }
+            }
+        }
+        return score;
+    }
+    public static void main(String[] args) {
+        List<Integer> guideSequence = new ArrayList<>();
+        for(int i=100;i>0;i--){
+            guideSequence.add(i);}
+
+        int[][] res = Spiral_fedes_buffer.placeSquaresAndReturnArray(guideSequence);
+        Visualizer arrayVisualization = new Visualizer(new int[0][0]);
+        arrayVisualization.setVisible(true);
+        arrayVisualization.updateVisualization(res);
+        arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
+        System.out.println("Result: " + res.toString());
+
+
+
+        while(true){}
+        //System.out.println("Result: " + res.toString());
+        //printSolution(res);
+        //System.out.println(res.length);
+        // You can also test other methods here if needed
+    }
+
+}
