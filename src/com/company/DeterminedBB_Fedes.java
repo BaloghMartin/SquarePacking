@@ -86,7 +86,7 @@ public class DeterminedBB_Fedes {
     }
 
     public static void main(String[] args) {
-        for(int i=3; i<101; i++){
+        for(int i=10; i<20; i++){
             DeterminedBB_Fedes determinedBB = new DeterminedBB_Fedes(i);
             System.out.println(determinedBB.Bestgene.toString()+" "+determinedBB.BestFittness.toString());
         }

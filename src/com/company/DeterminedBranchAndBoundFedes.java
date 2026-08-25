@@ -3,7 +3,7 @@ package com.company;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public class DeterminedBB {
+public class DeterminedBranchAndBoundFedes {
 
     static Visualizer arrayVisualization = new Visualizer(new int[0][0]);
     private Map<Integer, List<Integer>> bestGenes;
@@ -11,7 +11,7 @@ public class DeterminedBB {
     private int N;
     private int Counter = 0;
 
-    public DeterminedBB(int N) {
+    public DeterminedBranchAndBoundFedes(int N) {
         this.N = N;
         LEFT = new ArrayList<>(); // Create a new ArrayList for LEFT
         DONE = new ArrayList<>(); // Create a new ArrayList for DONE
@@ -21,7 +21,7 @@ public class DeterminedBB {
         }
         // ez ide azért kell hogy legyen egy baseline, hogy első körbe ne számolja ki
         // mindennek az értékét
-        Gene elso = new Gene(LEFT, N, Integer.MAX_VALUE);
+        Gene elso = new Gene(LEFT, N, Integer.MIN_VALUE);
         elso.calculateFitness();
         BestFittness = elso.getFitness();
 
@@ -39,7 +39,7 @@ public class DeterminedBB {
         return BestFittness;
     }
 
-    private Integer BestFittness = Integer.MAX_VALUE;
+    private Integer BestFittness = Integer.MIN_VALUE;
     static List<Integer> Bestgene;
 
     class Gene {
@@ -59,7 +59,8 @@ public class DeterminedBB {
 
         // Method to calculate fitness (can be parallelized).
         public void calculateFitness() {
-            this.fitness = Spiral.placeSquaresAndReturnSize(gene, N, bestFitness);
+            this.fitness = Spiral_fedes.placeSquaresAndReturnArray(gene, bestFitness).length;
+            // System.out.println(this.fitness);
         }
 
         // Getter for fitness.
@@ -71,16 +72,12 @@ public class DeterminedBB {
         }
     }
 
-    boolean width = true;
-
     public void DETERMINE() {
-        int roundedResult;
-        // if (width) {
+
         double result = 200.0 / (40 + N); // Converts to floating-point division
-        roundedResult = (int) Math.ceil(result); // Rounds up
+        int roundedResult = (int) Math.ceil(result); // Rounds up
+        // int roundedResult = 4;
         // System.out.println(roundedResult);
-        // }
-        // else {roundedResult=1;}
 
         List<List<Integer>> arrays = generateDescendingLists(LEFT.stream().mapToInt(Integer::intValue).toArray(),
                 roundedResult);
@@ -92,7 +89,7 @@ public class DeterminedBB {
             element.addAll(0, DONE); // Add elements from DONE
             // System.out.println(element.toString());
             Gene gene = new Gene(element, element.size(), BestFittness); // Create Gene without calculating fitness.
-
+            // System.out.println(gene.gene);
             geneList.add(gene); // Add to thread-safe list
         });
 
@@ -100,13 +97,15 @@ public class DeterminedBB {
         geneList.parallelStream().forEach(Gene::calculateFitness);
 
         for (Gene gene : geneList) {
-            // System.out.println(gene.gene.toString());
+            // System.out.println(gene.gene.toString() + " " + gene.fitness);
             int fitness = gene.getFitness(); // Assuming Gene has a getFitness() method
-            if (fitness < BestFittness) {
+            if (fitness > BestFittness) {
+                // System.out.println( gene.gene.toString() + " "+BestFittness+ "-rol " +
+                // fitness+"-ra");
                 BestFittness = fitness;
                 Bestgene = gene.gene;
-                System.out.println(fitness);
-                arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
+                // System.out.println(fitness);
+                arrayVisualization.updateVisualization(Spiral_fedes.placeSquaresAndReturnArray(Bestgene, BestFittness));
                 arrayVisualization
                         .saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
             }
@@ -118,10 +117,10 @@ public class DeterminedBB {
         i++;
         // System.out.println("branchinganboundin");
         // ITT KELL ÁTÍRNI HOGY MENNYI ELEM MÉLYRE MENJEN
-        if (i > 500 / N) {
+        // if(i>500/N){return;}
+        if (i == 1) {
             return;
         }
-        // if(i>500/N){width=false;}
         if (i != N) {
             DETERMINE();
         }
@@ -168,14 +167,15 @@ public class DeterminedBB {
 
     public static void main(String[] args) {
         for (int i = 10; i < 20; i++) {
-            DeterminedBB determinedBB = new DeterminedBB(i);
+            DeterminedBranchAndBoundFedes determinedBB = new DeterminedBranchAndBoundFedes(i);
 
             System.out.println(determinedBB.Bestgene.size() + " " + determinedBB.BestFittness.toString() + " "
                     + determinedBB.Bestgene.toString());
-            arrayVisualization.updateVisualization(Spiral.placeSquaresAndReturnArray(Bestgene));
+            arrayVisualization.updateVisualization(Spiral_fedes.placeSquaresAndReturnArray(Bestgene));
             arrayVisualization
                     .saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
 
         }
     }
 }
+ 

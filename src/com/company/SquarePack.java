@@ -1,0 +1,77 @@
+import java.util.*;
+
+public class SquarePack {
+
+    /* -------------------------------------------------------------
+     *  Public entry point – returns the minimal board side N
+     *  for a given n (1‑based).  Works fast for n <= 12.
+     *  ------------------------------------------------------------- */
+    public static int minimalBoardSize(int n) {
+        int lowerBound = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6.0));
+
+        // start with the lower bound – if it works we are done
+        if (fitsAll(n, lowerBound)) return lowerBound;
+
+        // otherwise increase N until a solution is found
+        for (int N = lowerBound + 1; ; N++) {
+            if (fitsAll(n, N)) return N;
+        }
+    }
+
+    /* -------------------------------------------------------------
+     *  Recursive backtracking that places squares in decreasing
+     *  order.  Returns true iff all squares fit.
+     *  ------------------------------------------------------------- */
+    private static boolean fitsAll(int n, int N) {
+        boolean[][] board = new boolean[N][N];
+        // place the largest square first – symmetry breaking
+        return placeSquare(n, board, N);
+    }
+
+    /* -------------------------------------------------------------
+     *  Tries to place square of size 'size' on the board.
+     *  On success, recurses to place the next smaller square.
+     *  ------------------------------------------------------------- */
+    private static boolean placeSquare(int size, boolean[][] board, int N) {
+        if (size == 0) return true; // all squares placed
+
+        // try every top‑left corner where the square would fit
+        for (int r = 0; r <= N - size; r++) {
+            for (int c = 0; c <= N - size; c++) {
+                if (canPlace(board, r, c, size)) {
+                    setSquare(board, r, c, size, true);
+                    if (placeSquare(size - 1, board, N)) return true;
+                    setSquare(board, r, c, size, false); // backtrack
+                }
+            }
+        }
+        return false; // no placement possible for this size
+    }
+
+    /* -------------------------------------------------------------
+     *  Helpers
+     * ------------------------------------------------------------- */
+    private static boolean canPlace(boolean[][] board, int r, int c, int size) {
+        for (int i = r; i < r + size; i++)
+            for (int j = c; j < c + size; j++)
+                if (board[i][j]) return false;
+        return true;
+    }
+
+    private static void setSquare(boolean[][] board, int r, int c, int size, boolean value) {
+        for (int i = r; i < r + size; i++)
+            for (int j = c; j < c + size; j++)
+                board[i][j] = value;
+    }
+
+    /* -------------------------------------------------------------
+     *  Demo: print minimal N for n = 1 … 12
+     * ------------------------------------------------------------- */
+    public static void main(String[] args) {
+        System.out.println("Optimal N for n = 1 … 12");
+        for (int n = 1; n <= 100; n++) {
+            int N = minimalBoardSize(n);
+            System.out.printf("n=%2d  N=%2d%n", n, N);
+        }
+    }
+}

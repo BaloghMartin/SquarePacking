@@ -282,7 +282,62 @@ public class Spiral_fedes {
 
         return ratio;
     }
+    public static int[][] placeSquaresAndReturnArray(List<Integer> guideSequence, int MAX) {
+        int currentGuideIndex = 0;
+        int meretHelp = guideSequence.size();
+        int hivnum = 0;
+        int optV2 = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
+        //System.out.println(guideSequence.toString());
+        int[][] solution;
 
+        while (true) {
+            solution = new int[optV2 - hivnum][optV2 - hivnum];
+            //System.out.println(solution.length);
+            while (currentGuideIndex <= guideSequence.size()) {
+                meretHelp = guideSequence.get(currentGuideIndex);
+
+                int[] position = findFirstZeroPosition(solution, meretHelp);
+                if (position != null) {
+                    //System.out.println(meretHelp);
+                    solution = placer(solution, meretHelp, position[0], position[1]);
+                    currentGuideIndex++;
+
+                    if (currentGuideIndex >= guideSequence.size()) {
+                        //printSolution(solution);
+                        break;
+                        //return solution;
+                    }
+                } else {
+                    position = findBestPosition(solution, meretHelp);
+                    if (position != null) {
+                        solution = placer(solution, meretHelp, position[0], position[1]);
+                        currentGuideIndex++;
+
+                        if (currentGuideIndex >= guideSequence.size()) {
+                            //printSolution(solution);
+                            break;
+                            //return solution;
+                        } else {
+                            //System.out.println(meretHelp);
+                            //solution = placer(solution, meretHelp, 0, 0);
+                        }
+
+                        //break;
+                    }
+                }
+            }
+
+            boolean full = ellenorzo(solution);
+            if (full==true) {
+                //System.out.println(solution.length);
+                return solution;
+            } else {
+                currentGuideIndex = 0;
+                hivnum++;
+                if(optV2-hivnum<MAX){return solution;}
+            }
+        }
+    }
 
     private static int[] findBestPosition(int[][] matrix, int integer) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
@@ -358,7 +413,7 @@ public class Spiral_fedes {
         return score;
     }
     public static void main(String[] args) {
-        for(int n=10;n>0;n++) {
+        for(int n=10;n<11;n++) {
             java.util.List<Integer> guideSequence = new ArrayList<>();
             for (int i = n; i > 0; i--) {
                 guideSequence.add(i);
@@ -368,13 +423,13 @@ public class Spiral_fedes {
             Visualizer arrayVisualization = new Visualizer(new int[0][0]);
             //arrayVisualization.setVisible(true);
             arrayVisualization.updateVisualization(res);
-            arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/kep/array_visualization"+ n +".png");
+            arrayVisualization.saveVisualizationAsImage(System.getProperty("user.home") + "/Desktop/array_visualization.png");
             int optim = (int) Math.ceil(Math.sqrt(guideSequence.size() * (guideSequence.size() + 1) * (2 * guideSequence.size() + 1) / 6));
             System.out.println("opt: "+optim +" n: "+n+ " Result: " + res.length);
         }
 
 
-        while(true){}
+        //while(true){}
         //System.out.println("Result: " + res.toString());
         //printSolution(res);
         //System.out.println(res.length);
