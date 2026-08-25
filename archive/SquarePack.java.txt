@@ -1,15 +1,21 @@
+package com.company.model;
+
+import com.company.model.*;
+import com.company.algorithm.*;
+import com.company.ui.*;
+import com.company.exception.*;
 import java.util.*;
 
 public class SquarePack {
 
     /* -------------------------------------------------------------
-     *  Public entry point – returns the minimal board side N
-     *  for a given n (1‑based).  Works fast for n <= 12.
+     *  Public entry point - returns the minimal board side N
+     *  for a given n (1-based).  Works fast for n <= 12.
      *  ------------------------------------------------------------- */
     public static int minimalBoardSize(int n) {
         int lowerBound = (int) Math.ceil(Math.sqrt(n * (n + 1) * (2 * n + 1) / 6.0));
 
-        // start with the lower bound – if it works we are done
+        // start with the lower bound - if it works we are done
         if (fitsAll(n, lowerBound)) return lowerBound;
 
         // otherwise increase N until a solution is found
@@ -24,7 +30,7 @@ public class SquarePack {
      *  ------------------------------------------------------------- */
     private static boolean fitsAll(int n, int N) {
         boolean[][] board = new boolean[N][N];
-        // place the largest square first – symmetry breaking
+        // place the largest square first - symmetry breaking
         return placeSquare(n, board, N);
     }
 
@@ -35,7 +41,7 @@ public class SquarePack {
     private static boolean placeSquare(int size, boolean[][] board, int N) {
         if (size == 0) return true; // all squares placed
 
-        // try every top‑left corner where the square would fit
+        // try every top-left corner where the square would fit
         for (int r = 0; r <= N - size; r++) {
             for (int c = 0; c <= N - size; c++) {
                 if (canPlace(board, r, c, size)) {
@@ -65,10 +71,10 @@ public class SquarePack {
     }
 
     /* -------------------------------------------------------------
-     *  Demo: print minimal N for n = 1 … 12
+     *  Demo: print minimal N for n = 1 ... 12
      * ------------------------------------------------------------- */
     public static void main(String[] args) {
-        System.out.println("Optimal N for n = 1 … 12");
+        System.out.println("Optimal N for n = 1 ... 12");
         for (int n = 1; n <= 100; n++) {
             int N = minimalBoardSize(n);
             System.out.printf("n=%2d  N=%2d%n", n, N);

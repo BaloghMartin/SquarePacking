@@ -1,5 +1,9 @@
-package com.company;
+package com.company.exception;
 
+
+import com.company.algorithm.*;
+import com.company.ui.*;
+import com.company.exception.*;
 public class Except {
     public static class Tulkicsi extends Exception {
     public Tulkicsi(String errorMessage) {
@@ -9,3 +13,4 @@ public class Except {
 
 }
 }
+

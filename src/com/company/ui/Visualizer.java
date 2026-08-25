@@ -1,4 +1,8 @@
-package com.company;
+package com.company.ui;
+
+
+import com.company.algorithm.*;
+import com.company.ui.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -8,7 +12,6 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 public class Visualizer extends JFrame {
 
     private static Visualizer instance;
@@ -21,7 +24,7 @@ public class Visualizer extends JFrame {
 
     private ArrayPanel arrayPanel; // Reference to the ArrayPanel for updates
 
-    Visualizer(int[][] dataArray) {
+    public Visualizer(int[][] dataArray) {
         this.dataArray = dataArray;
 
         setTitle("Array Visualization");
@@ -175,3 +178,4 @@ public class Visualizer extends JFrame {
 
 
 }
+

@@ -1,5 +1,10 @@
-package com.company;
+package com.company.controller;
 
+import com.company.model.*;
+import com.company.algorithm.*;
+import com.company.controller.*;
+import com.company.ui.*;
+import com.company.exception.*;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -440,3 +445,4 @@ public class algoIranyito2MULTI {
 
     }
 }
+

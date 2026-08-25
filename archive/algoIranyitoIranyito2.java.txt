@@ -1,5 +1,10 @@
-package com.company;
+package com.company.controller;
 
+import com.company.model.*;
+import com.company.algorithm.*;
+import com.company.controller.*;
+import com.company.ui.*;
+import com.company.exception.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -61,3 +66,4 @@ public class algoIranyitoIranyito2 {
         }
     }
 }
+

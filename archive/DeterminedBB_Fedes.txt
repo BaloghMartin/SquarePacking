@@ -1,5 +1,9 @@
-package com.company;
+package com.company.archive;
 
+import com.company.model.*;
+import com.company.algorithm.*;
+import com.company.ui.*;
+import com.company.exception.*;
 import java.util.*;
 
 public class DeterminedBB_Fedes {
@@ -93,6 +97,7 @@ public class DeterminedBB_Fedes {
 
     }
 }
+
 
 
 

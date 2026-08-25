@@ -1,0 +1,15 @@
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+
+# Output directories
+out/
+bin/
+build/

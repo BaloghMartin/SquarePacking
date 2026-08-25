@@ -1,3 +1,9 @@
+package com.company.model;
+
+import com.company.model.*;
+import com.company.algorithm.*;
+import com.company.ui.*;
+import com.company.exception.*;
 /*package com.company;
 
 import java.util.ArrayList;
@@ -6,7 +12,7 @@ import java.util.List;
 import static com.company.Spiral.findFirstZeroPosition;
 import static com.company.Spiral.placer;
 
-class NodeOpt {
+public class NodeOpt {
     List<Integer> gene;
     List<Node> children;
     int N;
@@ -50,7 +56,7 @@ class NodeOpt {
     }
 }
 
-class NodeOptOrderTree {
+public class NodeOptOrderTree {
     public Node root;
     private List<Integer> bestGene;
     private int bestFitness;
@@ -183,3 +189,4 @@ class NodeOptOrderTree {
         }
     }
 }*/
+

@@ -1,20 +1,19 @@
 package com.company;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.company.controller.DeterminedBB;
+import com.company.controller.DeterminedBranchAndBoundFedes;
 
 public class Main {
-
     public static void main(String[] args) {
-       algoIranyitoIranyito2.main(args);
-        int N = 5; // Change N to the desired value
+        System.out.println("Indul a kalkuláció...");
 
-        // Step 1: Instantiate an OrderTree object
-        //OrderTree orderTree = new OrderTree(N);
+        // Válaszd ki, melyik verziót szeretnéd futtatni az alábbiak közül,
+        // és vedd ki a kommentelésből (a másikat hagyd kommentben)!
 
-        // Step 2: Call the printTree method on the root node to visualize the tree
-        //orderTree.printTree();
+        // 1. Az eredeti Determined Branch and Bound (Spiral algoritmussal):
+        // DeterminedBB.main(args);
 
-
-}}
+        // 2. A Fedes verziójú Determined Branch and Bound (Spiral_fedes algoritmussal):
+        DeterminedBranchAndBoundFedes.main(args);
+    }
+}

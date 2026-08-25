@@ -1,7 +1,10 @@
+package com.company.algorithm;
 
-package com.company;
 
-        import java.util.ArrayList;
+import com.company.algorithm.*;
+import com.company.ui.*;
+
+import java.util.ArrayList;
         import java.util.List;
 
 public class Spiral_fedes {
@@ -208,7 +211,7 @@ public class Spiral_fedes {
 
             while (currentGuideIndex <= guideSequence.size()) {
                 meretHelp = guideSequence.get(currentGuideIndex);
-                //ezt kell majd átvinni
+                //ezt kell majd Ä‚Ë‡tvinni
                 int[] position = findFirstZeroPosition(solution, meretHelp);
                 if (position != null) {
                     //meg ezt
@@ -400,7 +403,7 @@ public class Spiral_fedes {
         int cols = matrix[0].length;
         int score=0;
         if (row + integer > rows || col + integer > cols) {
-            //System.out.println("Szeritnem ide nem kéne belefutnia");
+            //System.out.println("Szeritnem ide nem kÄ‚Â©ne belefutnia");
             return 0;
         }
         for (int i = row; i < row + integer; i++) {
